@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -17,7 +18,8 @@ import (
 func main() {
 	env,err := config.GetEnv("ENVIRONMENT")
 	if err != nil {
-		panic(err)
+		fmt.Errorf("environment variable ENVIRONMENT not set: %w", err)
+		return
 	}
 
 	log := InitLogger(env)
