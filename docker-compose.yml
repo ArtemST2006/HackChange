@@ -18,24 +18,24 @@ services:
       timeout: 5s
       retries: 5
 
-  # backend:
-  #   build: ./backend
-  #   environment:
-  #       DATABASE_URL: ${DATABASE_URL}
-  #       DB_HOST: ${DB_HOST}
-  #       DB_PORT: ${DB_PORT}
-  #       DB_NAME: ${DB_NAME}
-  #       DB_USER: ${DB_USER}
-  #       DB_PASSWORD: ${DB_PASSWORD}
-  #       SSL_MODE: ${SSL_MODE}
-  #       JWT_SECRET: ${JWT_SECRET}
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./uploads:/app/uploads
+  backend:
+    build: ./backend
+    environment:
+        DATABASE_URL: ${DATABASE_URL}
+        DB_HOST: ${DB_HOST}
+        DB_PORT: ${DB_PORT}
+        DB_NAME: ${DB_NAME}
+        DB_USER: ${DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD}
+        SSL_MODE: ${SSL_MODE}
+        JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
 
   # frontend:
   #   build:
