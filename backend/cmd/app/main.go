@@ -6,7 +6,9 @@ import (
 )
 
 func main() {
-	//init log
+	log:= InitLogger()
+	
+	_ = log
 
 	//init db
 
@@ -14,7 +16,7 @@ func main() {
 
 	//init service layer
 
-	//init hadler layer
+	//init handler layer
 
 	//start server
 
