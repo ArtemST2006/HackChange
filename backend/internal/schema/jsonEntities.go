@@ -51,13 +51,7 @@ type LoginReq struct {
 }
 
 type LoginResp struct {
-	Email string `json:"email"`
 	Token string `json:"token"`
-}
-
-type RefreshReq struct {
-	Email        string `json:"email"`
-	RefreshToken string `json:"refresh_token"`
 }
 
 type RefreshResp struct {
