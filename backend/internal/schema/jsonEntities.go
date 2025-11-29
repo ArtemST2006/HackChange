@@ -82,24 +82,42 @@ type CourseReq struct {
 	CourseName string `json:"course_name"`
 }
 
+// ------------ КОММЕНТАРИИ ------------------
+
+// Один комментарий
 type CommentResp struct {
-	Comment  string `json:"comment"`
-	Username string `json:"username"`
+	ID        uint   `json:"id"`
+	Comment   string `json:"comment"`
+	Username  string `json:"username"`
+	UserID    uint   `json:"user_id"`
+	CreatedAt string `json:"created_at"`
 }
 
-type CourceCommentReq struct {
+// Добавить комментарий к курсу
+type CourseCommentRequest struct {
 	CourseName string `json:"course_name"`
 	Comment    string `json:"comment"`
 }
 
-type LessonCommentReq struct {
-	LessonName string `json:"course_name"`
+// Добавить комментарий к уроку
+type LessonCommentRequest struct {
+	LessonName string `json:"lesson_name"`
 	Comment    string `json:"comment"`
 }
 
-type CourceCommentGet struct {
-	CourseName string `json:"course_name"`
+// Ответ со списком комментариев курса
+type CourseCommentsResponse struct {
+	Success  bool          `json:"success"`
+	Comments []CommentResp `json:"comments"`
 }
+
+// Ответ со списком комментариев урока
+type LessonCommentsResponse struct {
+	Success  bool          `json:"success"`
+	Comments []CommentResp `json:"comments"`
+}
+
+// ---------------------------------------------------
 
 type LessonResp struct {
 	Name        string `json:"name"`
@@ -109,11 +127,6 @@ type LessonResp struct {
 type LessonReq struct {
 	CourseName string `json:"course_name"`
 	LessonName string `json:"lesson_name"`
-}
-
-type LessonCommentGet struct {
-	LessonName string `json:"lesson_name"`
-	CourseName string `json:"course_name"`
 }
 
 type SignupCourseReq struct {
