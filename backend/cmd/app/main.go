@@ -9,14 +9,14 @@ import (
 	"syscall"
 
 	"github.com/ArtemST2006/HackChange/internal/config"
-	"github.com/ArtemST2006/HackChange/internal/handler"
+	"github.com/ArtemST2006/HackChange/internal/handlers"
 	"github.com/ArtemST2006/HackChange/internal/repository"
 	"github.com/ArtemST2006/HackChange/internal/server"
-	"github.com/ArtemST2006/HackChange/internal/service"
+	"github.com/ArtemST2006/HackChange/internal/services"
 )
 
 func main() {
-	env,err := config.GetEnv("ENVIRONMENT")
+	env, err := config.GetEnv("ENVIRONMENT")
 	if err != nil {
 		fmt.Errorf("environment variable ENVIRONMENT not set: %w", err)
 		return
@@ -31,14 +31,14 @@ func main() {
 	}
 
 	repository := repository.NewRepository(db) //инициализация репозитория
-    service := service.NewService(repository) //инициализация сервисов
-	handler := handler.NewHandler(service) //инициализация хендлеров
+	service := services.NewService(repository) //инициализация сервисов
+	handler := handlers.NewHandler(service)    //инициализация хендлеров
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
 
 	srv := new(server.Server)
-	go func(){
+	go func() {
 		if err := srv.Start("8000", handler.InitRoutes()); err != nil {
 			log.Error("failed to run server", slog.String("error", err.Error()))
 		}
@@ -62,21 +62,20 @@ func main() {
 func InitLogger(env string) *slog.Logger {
 	var log *slog.Logger
 
-	switch env { 
+	switch env {
 	case "PRODUCTION":
 		log = slog.New(
-		slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
+			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
 		)
 	case "DEVELOPMENT":
 		log = slog.New(
-		slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelError}),
+			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelError}),
 		)
 	default:
 		log = slog.New(
-		slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
+			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
 		)
 	}
-	
 
 	return log
 }

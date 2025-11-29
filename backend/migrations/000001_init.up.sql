@@ -16,6 +16,7 @@ CREATE TABLE courses (
     id SERIAL PRIMARY KEY,
     course_name VARCHAR(255) UNIQUE NOT NULL,
     professor_id INTEGER NOT NULL REFERENCES professor(id) ON DELETE CASCADE,
+    type TEXT,
     description TEXT
 );
 
