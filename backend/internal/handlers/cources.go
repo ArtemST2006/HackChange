@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"time"
+	"strconv"
 
 	"github.com/ArtemST2006/HackChange/internal/schema"
 )
@@ -35,6 +35,19 @@ func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }
 
+// PostCourseComment godoc
+// @Summary      Добавить комментарий к курсу
+// @Tags         cources
+// @Accept       json
+// @Produce      json
+// @Param        body	body		schema.CourseCommentRequest	true	"Данные комментария"
+// @Param        Authorization	header	string	true	"Bearer"
+// @Success		 201 	{object}	schema.CourseCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      401    {object}	schema.ErrorResponse
+// @Failure      404    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
+// @Router       /course/comment [post]
 func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
 	var req schema.CourseCommentRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -42,71 +55,68 @@ func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.CourseName == "" || req.Comment == "" {
-		h.respondWithError(w, http.StatusBadRequest, "course_name and comment are required")
+	if req.CourseID == 0 || req.Comment == "" {
+		h.respondWithError(w, http.StatusBadRequest, "course_id and comment are required")
 		return
 	}
 
-	// Получаем user_id из контекста
 	userID, ok := r.Context().Value("user_id").(uint)
 	if !ok {
 		h.respondWithError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-	username, _ := r.Context().Value("username").(string) // можно тоже из токена
 
-	// Здесь: сохранение в БД
-	// commentID, err := h.DB.CreateCourseComment(req.CourseName, userID, req.Comment)
-	// if err != nil { ... }
-	// Пока заглушка
-	newComment := schema.CommentResp{
-		ID:        99,
-		Comment:   req.Comment,
-		Username:  username,
-		UserID:    userID,
-		CreatedAt: time.Now().Format(time.RFC3339),
-	}
-
-	response := schema.CourseCommentsResponse{
-		Success:  true,
-		Comments: []schema.CommentResp{newComment},
-	}
-
-	h.respondWithJSON(w, http.StatusCreated, response)
-}
-
-func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
-	courseName := r.URL.Query().Get("course_name")
-	if courseName == "" {
-		h.respondWithError(w, http.StatusBadRequest, "course_name is required")
+	err := h.services.CommentService.CreateCourseComment(userID, req.CourseID, req.Comment)
+	if err != nil {
+		if err.Error() == "course not found" {
+			h.respondWithError(w, http.StatusNotFound, err.Error())
+		} else {
+			h.respondWithError(w, http.StatusInternalServerError, "Failed to add comment")
+		}
 		return
 	}
 
-	// Здесь будет вызов БД: comments, err := h.DB.GetCourseComments(courseName)
-	// Пока заглушка:
-	comments := []schema.CommentResp{
-		{
-			ID:        1,
-			Comment:   "Отличный курс по математике!",
-			Username:  "student1",
-			UserID:    101,
-			CreatedAt: time.Now().Format(time.RFC3339),
-		},
-		{
-			ID:        2,
-			Comment:   "Много домашки, но полезно.",
-			Username:  "student2",
-			UserID:    102,
-			CreatedAt: time.Now().Add(-24 * time.Hour).Format(time.RFC3339),
-		},
+	comments, err := h.services.CommentService.GetCourseComments(req.CourseID)
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
 	}
 
 	response := schema.CourseCommentsResponse{
 		Success:  true,
 		Comments: comments,
 	}
+	h.respondWithJSON(w, http.StatusCreated, response)
+}
 
-	h.respondWithJSON(w, http.StatusOK, response)
+// GetCourseComment godoc
+// @Summary      Получить комментарии к курсу
+// @Tags         cources
+// @Accept       json
+// @Produce      json
+// @Param        course_id	query		integer	true	"ID курса"
+// @Success		 200 	{object}	schema.CourseCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
+// @Router       /course/comment [get]
+func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
+	courseIDStr := r.URL.Query().Get("course_id")
+	courseID, err := strconv.ParseUint(courseIDStr, 10, 32)
+	if err != nil || courseID == 0 {
+		h.respondWithError(w, http.StatusBadRequest, "valid course_id is required")
+		return
+	}
+
+	comments, err := h.services.CommentService.GetCourseComments(uint(courseID))
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	h.respondWithJSON(w, http.StatusOK, schema.CourseCommentsResponse{
+		Success:  true,
+		Comments: comments,
+	})
 }
 
 // GetCourseLessons godoc
@@ -124,7 +134,7 @@ func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }
 
-// GetCourseLessons godoc
+// GetCourseLesson godoc
 // @Summary      Получить урок курса
 // @Tags         cources
 // @Accept       json
@@ -139,6 +149,19 @@ func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }
 
+// PostLessonComment godoc
+// @Summary      Добавить комментарий к уроку
+// @Tags         cources
+// @Accept       json
+// @Produce      json
+// @Param        body	body		schema.LessonCommentRequest	true	"Данные комментария"
+// @Param        Authorization	header	string	true	"Bearer"
+// @Success		 201 	{object}	schema.LessonCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      401    {object}	schema.ErrorResponse
+// @Failure      404    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
+// @Router       /lesson/comment [post]
 func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
 	var req schema.LessonCommentRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -146,8 +169,8 @@ func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.LessonName == "" || req.Comment == "" {
-		h.respondWithError(w, http.StatusBadRequest, "lesson_name and comment are required")
+	if req.LessonID == 0 || req.Comment == "" {
+		h.respondWithError(w, http.StatusBadRequest, "lesson_id and comment are required")
 		return
 	}
 
@@ -156,49 +179,58 @@ func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
 		h.respondWithError(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
-	username, _ := r.Context().Value("username").(string)
 
-	// Сохранение в БД (заглушка)
-	newComment := schema.CommentResp{
-		ID:        42,
-		Comment:   req.Comment,
-		Username:  username,
-		UserID:    userID,
-		CreatedAt: time.Now().Format(time.RFC3339),
-	}
-
-	response := schema.LessonCommentsResponse{
-		Success:  true,
-		Comments: []schema.CommentResp{newComment},
-	}
-
-	h.respondWithJSON(w, http.StatusCreated, response)
-}
-
-func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
-	lessonName := r.URL.Query().Get("lesson_name")
-	if lessonName == "" {
-		h.respondWithError(w, http.StatusBadRequest, "lesson_name is required")
+	err := h.services.CommentService.CreateLessonComment(userID, req.LessonID, req.Comment)
+	if err != nil {
+		if err.Error() == "lesson not found" {
+			h.respondWithError(w, http.StatusNotFound, err.Error())
+		} else {
+			h.respondWithError(w, http.StatusInternalServerError, "Failed to add comment")
+		}
 		return
 	}
 
-	// Заглушка
-	comments := []schema.CommentResp{
-		{
-			ID:        1,
-			Comment:   "Сложная тема, но лектор объяснил хорошо.",
-			Username:  "student3",
-			UserID:    103,
-			CreatedAt: time.Now().Format(time.RFC3339),
-		},
+	comments, err := h.services.CommentService.GetLessonComments(req.LessonID)
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
 	}
 
 	response := schema.LessonCommentsResponse{
 		Success:  true,
 		Comments: comments,
 	}
+	h.respondWithJSON(w, http.StatusCreated, response)
+}
 
-	h.respondWithJSON(w, http.StatusOK, response)
+// GetLessonComment godoc
+// @Summary      Получить комментарии к уроку
+// @Tags         cources
+// @Accept       json
+// @Produce      json
+// @Param        lesson_id	query		integer	true	"ID урока"
+// @Success		 200 	{object}	schema.LessonCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
+// @Router       /lesson/comment [get]
+func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
+	lessonIDStr := r.URL.Query().Get("lesson_id")
+	lessonID, err := strconv.ParseUint(lessonIDStr, 10, 32)
+	if err != nil || lessonID == 0 {
+		h.respondWithError(w, http.StatusBadRequest, "valid lesson_id is required")
+		return
+	}
+
+	comments, err := h.services.CommentService.GetLessonComments(uint(lessonID))
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	h.respondWithJSON(w, http.StatusOK, schema.LessonCommentsResponse{
+		Success:  true,
+		Comments: comments,
+	})
 }
 
 // SignupCourse godoc

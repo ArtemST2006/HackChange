@@ -1,23 +1,25 @@
-package service
+package services
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/repository"
-	"github.com/ArtemST2006/HackChange/internal/services/services"
+	"github.com/ArtemST2006/HackChange/internal/services/impl"
 	"github.com/go-chi/jwtauth/v5"
 )
 
 type Authorization interface {
-	// GenerateJWTToken(uint) (string, error)
 	TokenStruct() *jwtauth.JWTAuth
-	// GenerateHashPassword(string) (string, error)
 }
 
+type CommentService = impl.CommentService
+
 type Service struct {
-	Authorization
+	Authorization  Authorization
+	CommentService CommentService
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Authorization: services.NewAuthService(repo.Authorization),
+		Authorization:  impl.NewAuthService(repo.Authorization),
+		CommentService: impl.NewCommentService(repo.Comment),
 	}
 }

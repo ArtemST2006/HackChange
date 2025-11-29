@@ -95,14 +95,14 @@ type CommentResp struct {
 
 // Добавить комментарий к курсу
 type CourseCommentRequest struct {
-	CourseName string `json:"course_name"`
-	Comment    string `json:"comment"`
+	CourseID uint   `json:"course_id"`
+	Comment  string `json:"comment"`
 }
 
-// Добавить комментарий к уроку
+// Добавить коммент к уроку
 type LessonCommentRequest struct {
-	LessonName string `json:"lesson_name"`
-	Comment    string `json:"comment"`
+	LessonID uint   `json:"lesson_id"`
+	Comment  string `json:"comment"`
 }
 
 // Ответ со списком комментариев курса
