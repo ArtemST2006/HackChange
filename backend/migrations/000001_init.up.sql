@@ -81,3 +81,12 @@ CREATE TABLE professor_data (
     name VARCHAR(255),
     date_of_birth DATE
 );
+
+CREATE TABLE refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+    token_hash TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    revoked BOOLEAN DEFAULT false
+);

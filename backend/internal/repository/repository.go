@@ -1,11 +1,21 @@
 package repository
 
-import "gorm.io/gorm"
+import (
+	"log/slog"
+
+	postgres "github.com/ArtemST2006/HackChange/internal/repository/postgres"
+	"github.com/ArtemST2006/HackChange/internal/schema"
+	"gorm.io/gorm"
+)
 
 type Authorization interface{
-	//TODO methods for authorization
+	CreateUser(schema.Student) (uint, error)
+	GetUser(string) (*schema.Student, error)
+	CreateRefreshToken(schema.RefreshToken) error
+	GetValidRefreshToken(string) (*schema.RefreshToken, error)
+	RevokeRefreshToken(uint) error
+	RevokeAllRefreshTokens(string) error
 }
-
 
 
 type Repository struct{
@@ -13,10 +23,9 @@ type Repository struct{
 }
 
 
-func NewRepository(db *gorm.DB) *Repository{
-	//TODO implement repositories
+func NewRepository(db *gorm.DB,log *slog.Logger) *Repository{
 	return &Repository{
-		Authorization: nil,
+		Authorization: postgres.NewAuthPostgres(db),
 	}
 }
 

@@ -1,5 +1,7 @@
 package schema
 
+import "time"
+
 type Student struct {
 	ID           uint   `gorm:"column:id;primaryKey;autoIncrement"`
 	UserName     string `gorm:"column:user_name;type:varchar(255);not null"`
@@ -101,3 +103,14 @@ type ProfessorData struct {
 }
 
 func (ProfessorData) TableName() string { return "professor_data" }
+
+
+type RefreshToken struct {
+	ID        uint      `gorm:"column:id;primaryKey;autoIncrement"`
+	UserID    uint      `gorm:"column:user_id;not null"`
+	TokenHash string    `gorm:"column:token_hash;type:text;not null"`
+	ExpiresAt time.Time `gorm:"column:expires_at;type:timestamptz;not null"`
+	Revoke    bool      `gorm:"column:revoke;type:boolean;default:false"`
+}
+
+func (RefreshToken) TableName() string { return "refresh_tokens" }

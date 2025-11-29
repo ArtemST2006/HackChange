@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -16,7 +17,7 @@ type Handler struct {
  services *service.Service
 }
 
-func NewHandler(services *service.Service) *Handler {
+func NewHandler(services *service.Service, log *slog.Logger) *Handler {
  return &Handler{
   services: services,
  }
