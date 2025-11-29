@@ -50,7 +50,7 @@ func (s *AuthService) CreateUser(user schema.Student) (uint, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GetUser(email string, password string) (*TokenPair, *schema.Student, error) {
+func (s *AuthService) GetUserA(email string, password string) (*TokenPair, *schema.Student, error) {
 	if !govalidator.IsEmail(email) {
 		s.log.Error("invalid email format")
 		return nil, nil, fmt.Errorf("invalid credentials")

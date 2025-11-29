@@ -14,7 +14,7 @@ type Authorization interface {
 	GenerateHashPassword(string) (string, error)
 	RefreshToken(string) (*impl.TokenPair, error)
 	CreateUser(schema.Student) (uint, error)
-	GetUser(string, string) (*impl.TokenPair, *schema.Student, error)
+	GetUserA(string, string) (*impl.TokenPair, *schema.Student, error)
 	Logout(string) error
 }
 

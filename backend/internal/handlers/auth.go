@@ -69,7 +69,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, in, err := h.services.GetUser(input.Email, input.HashedPassword) 
+	token, in, err := h.services.GetUserA(input.Email, input.HashedPassword) 
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
