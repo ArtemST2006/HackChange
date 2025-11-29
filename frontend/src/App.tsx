@@ -8,6 +8,7 @@ import { Courses } from './pages/Courses/Courses';
 import { CourseDetail } from './pages/CourseDetail/CourseDetail';
 import { Lesson } from './pages/Lesson/Lesson';
 import { Homework } from './pages/Homework/Homework';
+import { HomeworkDetail } from './pages/HomeworkDetail';
 import { Profile } from './pages/Profile/Profile';
 import './assets/styles/global.css';
 
@@ -95,6 +96,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Homework />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/homework/:homeworkId"
+        element={
+          <ProtectedRoute>
+            <HomeworkDetail />
           </ProtectedRoute>
         }
       />

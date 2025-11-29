@@ -15,6 +15,27 @@ export const CourseDetail: React.FC = () => {
     new Set(courseModules.filter(m => m.isExpanded).map(m => m.id))
   );
 
+  // Обработчик присоединения к курсу
+  const handleJoinCourse = async () => {
+    if (!course) return;
+
+    try {
+      // TODO: Здесь будет API запрос к бэкенду
+      // await courseService.joinCourse(courseId);
+
+      console.log(`Присоединение к курсу: ${course.title} (ID: ${courseId})`);
+
+      // Имитация успешного присоединения
+      alert(`Вы успешно записались на курс "${course.title}"!\n\nКурс добавлен в раздел "Мои курсы".`);
+
+      // После успешного присоединения перенаправляем на страницу "Мои курсы"
+      navigate('/courses');
+    } catch (error) {
+      console.error('Ошибка при присоединении к курсу:', error);
+      alert('Произошла ошибка при записи на курс. Попробуйте позже.');
+    }
+  };
+
   if (!course) {
     return (
       <div className="course-detail-page">
@@ -156,18 +177,34 @@ export const CourseDetail: React.FC = () => {
                 </div>
               </div>
 
-              <div className="course-progress-block">
-                <div className="progress-info">
-                  <span className="progress-label">Прогресс прохождения</span>
-                  <span className="progress-value">{course.progress}%</span>
+              {/* Если пользователь записан на курс - показываем прогресс */}
+              {course.isActive ? (
+                <div className="course-progress-block">
+                  <div className="progress-info">
+                    <span className="progress-label">Прогресс прохождения</span>
+                    <span className="progress-value">{course.progress}%</span>
+                  </div>
+                  <div className="progress-bar-large">
+                    <div className="progress-fill-large" style={{ width: `${course.progress}%` }}></div>
+                  </div>
+                  <div className="progress-stats">
+                    <span>{course.completedModules} из {course.totalModules} модулей завершено</span>
+                  </div>
                 </div>
-                <div className="progress-bar-large">
-                  <div className="progress-fill-large" style={{ width: `${course.progress}%` }}></div>
+              ) : (
+                /* Если не записан - показываем кнопку присоединения */
+                <div className="join-course-block">
+                  <button className="join-course-btn" onClick={handleJoinCourse}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+                    </svg>
+                    Присоединиться к курсу
+                  </button>
+                  <p className="join-course-info">
+                    Получите доступ ко всем материалам курса и начните обучение
+                  </p>
                 </div>
-                <div className="progress-stats">
-                  <span>{course.completedModules} из {course.totalModules} модулей завершено</span>
-                </div>
-              </div>
+              )}
             </div>
             <div className="course-hero-image">
               <img src={course.coverImage} alt={course.title} />

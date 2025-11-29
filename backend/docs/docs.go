@@ -34,7 +34,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.LoginReq"
+                            "$ref": "#/definitions/schema.LoginReq"
                         }
                     }
                 ],
@@ -42,25 +42,54 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.LoginResp"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.LoginResp"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Выйти из системы",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -78,34 +107,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Овновить JWT токен",
-                "parameters": [
-                    {
-                        "description": "JWT refresh",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entities.RefreshReq"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entities.RefreshResp"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.RefreshResp"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -130,27 +142,22 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.RegistrationReq"
+                            "$ref": "#/definitions/schema.RegistrationReq"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "id: идентификатор пользователя",
                         "schema": {
-                            "$ref": "#/definitions/entities.RegistrationResp"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -170,41 +177,30 @@ const docTemplate = `{
                 "summary": "Получить комментарии к курсу",
                 "parameters": [
                     {
-                        "description": "Данные о курсе",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entities.CourceCommentGet"
-                        }
+                        "type": "integer",
+                        "description": "ID курса",
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entities.CommentResp"
-                            }
+                            "$ref": "#/definitions/schema.CourseCommentsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -219,15 +215,15 @@ const docTemplate = `{
                 "tags": [
                     "cources"
                 ],
-                "summary": "Отправить комментарий к курсу",
+                "summary": "Добавить комментарий к курсу",
                 "parameters": [
                     {
-                        "description": "Комментарий к курсу",
+                        "description": "Данные комментария",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.CourceCommentReq"
+                            "$ref": "#/definitions/schema.CourseCommentRequest"
                         }
                     },
                     {
@@ -242,25 +238,31 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entities.CommentResp"
+                            "$ref": "#/definitions/schema.CourseCommentsResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -285,7 +287,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.CourseReq"
+                            "$ref": "#/definitions/schema.DashboardRequest"
                         }
                     }
                 ],
@@ -293,25 +295,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.Course"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.DashboardResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -336,7 +326,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.LessonReq"
+                            "$ref": "#/definitions/schema.LessonReq"
                         }
                     }
                 ],
@@ -344,135 +334,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.LessonResp"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.LessonResp"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/course/lesson/comment": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cources"
-                ],
-                "summary": "Получить комментарии к уроку",
-                "parameters": [
-                    {
-                        "description": "Данные о уроке",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entities.LessonCommentGet"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entities.CommentResp"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cources"
-                ],
-                "summary": "Отправить комментарий к уроку",
-                "parameters": [
-                    {
-                        "description": "Комментарий к уроку",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entities.LessonCommentReq"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/entities.CommentResp"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -497,7 +365,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.HomeworkReq"
+                            "$ref": "#/definitions/schema.HomeworkReq"
                         }
                     },
                     {
@@ -514,26 +382,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.HomeworkResp"
+                                "$ref": "#/definitions/schema.HomeworkResp"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -569,6 +431,11 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "name": "homework_id",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
                         "name": "lesson_name",
                         "in": "formData"
                     },
@@ -584,25 +451,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entities.HomeworkResp"
+                            "$ref": "#/definitions/schema.HomeworkResp"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -627,7 +488,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.SignupCourseReq"
+                            "$ref": "#/definitions/schema.SignupCourseReq"
                         }
                     },
                     {
@@ -642,25 +503,13 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entities.SignupCourseResp"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.SignupCourseResp"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -685,7 +534,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.CourseReq"
+                            "$ref": "#/definitions/schema.LessonsRequest"
                         }
                     }
                 ],
@@ -695,26 +544,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.LessonResp"
+                                "$ref": "#/definitions/schema.LessonsResponse"
                             }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -738,21 +575,126 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Course"
+                                "$ref": "#/definitions/schema.Course"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/lesson/comment": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cources"
+                ],
+                "summary": "Получить комментарии к уроку",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID урока",
+                        "name": "lesson_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.LessonCommentsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cources"
+                ],
+                "summary": "Добавить комментарий к уроку",
+                "parameters": [
+                    {
+                        "description": "Данные комментария",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.LessonCommentRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/schema.LessonCommentsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
             }
         },
         "/user/change_pass": {
-            "post": {
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
@@ -777,39 +719,28 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.UserChangePassReq"
+                            "$ref": "#/definitions/schema.UserChangePassReq"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "id: идентификатор пользователя",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserChangePassResp"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -842,26 +773,14 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Course"
+                                "$ref": "#/definitions/schema.CourseDB"
                             }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -883,20 +802,20 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.DashboardResponse"
+                            "$ref": "#/definitions/schema.DashboardResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
             }
         },
         "/user/edit": {
-            "post": {
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
@@ -921,33 +840,28 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entities.UserProfile"
+                            "$ref": "#/definitions/schema.StudentProfile"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "id: идентификатор пользователя",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserProfile"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -978,25 +892,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserProfile"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.StudentProfile"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/entities.ErrorResponse"
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     }
                 }
@@ -1004,37 +906,72 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entities.CommentResp": {
+        "schema.CommentResp": {
             "type": "object",
             "properties": {
                 "comment": {
                     "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"
                 }
             }
         },
-        "entities.CourceCommentGet": {
+        "schema.Course": {
             "type": "object",
             "properties": {
-                "course_name": {
+                "courseName": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "professorID": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }
         },
-        "entities.CourceCommentReq": {
+        "schema.CourseCommentRequest": {
             "type": "object",
             "properties": {
                 "comment": {
                     "type": "string"
                 },
-                "course_name": {
-                    "type": "string"
+                "course_id": {
+                    "type": "integer"
                 }
             }
         },
-        "entities.Course": {
+        "schema.CourseCommentsResponse": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.CommentResp"
+                    }
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "schema.CourseDB": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1045,26 +982,39 @@ const docTemplate = `{
                 },
                 "professor": {
                     "type": "string"
-                }
-            }
-        },
-        "entities.CourseReq": {
-            "type": "object",
-            "properties": {
-                "course_name": {
+                },
+                "type": {
                     "type": "string"
                 }
             }
         },
-        "entities.DashboardResponse": {
+        "schema.DashboardRequest": {
             "type": "object",
             "properties": {
-                "course": {
-                    "$ref": "#/definitions/entities.Course"
+                "course_name": {
+                    "description": "добавь в свагер",
+                    "type": "string"
                 }
             }
         },
-        "entities.ErrorResponse": {
+        "schema.DashboardResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "professor": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -1080,7 +1030,18 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.HomeworkReq": {
+        "schema.HomeworkFile": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.HomeworkReq": {
             "type": "object",
             "properties": {
                 "course_name": {
@@ -1094,7 +1055,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.HomeworkResp": {
+        "schema.HomeworkResp": {
             "type": "object",
             "properties": {
                 "course_name": {
@@ -1104,11 +1065,13 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "files": {
-                    "description": "тут надо будет сделать",
                     "type": "array",
                     "items": {
-                        "type": "object"
+                        "$ref": "#/definitions/schema.HomeworkFile"
                     }
+                },
+                "homework_id": {
+                    "type": "string"
                 },
                 "lesson_name": {
                     "type": "string"
@@ -1121,29 +1084,32 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.LessonCommentGet": {
-            "type": "object",
-            "properties": {
-                "course_name": {
-                    "type": "string"
-                },
-                "lesson_name": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.LessonCommentReq": {
+        "schema.LessonCommentRequest": {
             "type": "object",
             "properties": {
                 "comment": {
                     "type": "string"
                 },
-                "course_name": {
-                    "type": "string"
+                "lesson_id": {
+                    "type": "integer"
                 }
             }
         },
-        "entities.LessonReq": {
+        "schema.LessonCommentsResponse": {
+            "type": "object",
+            "properties": {
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.CommentResp"
+                    }
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "schema.LessonReq": {
             "type": "object",
             "properties": {
                 "course_name": {
@@ -1154,7 +1120,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.LessonResp": {
+        "schema.LessonResp": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1165,7 +1131,27 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.LoginReq": {
+        "schema.LessonsRequest": {
+            "type": "object",
+            "properties": {
+                "course_name": {
+                    "description": "добавь в свагер",
+                    "type": "string"
+                }
+            }
+        },
+        "schema.LessonsResponse": {
+            "type": "object",
+            "properties": {
+                "lessons": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.LessonResp"
+                    }
+                }
+            }
+        },
+        "schema.LoginReq": {
             "type": "object",
             "properties": {
                 "email": {
@@ -1176,29 +1162,15 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.LoginResp": {
+        "schema.LoginResp": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
-                },
                 "token": {
                     "type": "string"
                 }
             }
         },
-        "entities.RefreshReq": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.RefreshResp": {
+        "schema.RefreshResp": {
             "type": "object",
             "properties": {
                 "email": {
@@ -1215,7 +1187,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.RegistrationReq": {
+        "schema.RegistrationReq": {
             "type": "object",
             "properties": {
                 "cource": {
@@ -1244,15 +1216,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.RegistrationResp": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.SignupCourseReq": {
+        "schema.SignupCourseReq": {
             "type": "object",
             "properties": {
                 "course_name": {
@@ -1263,7 +1227,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.SignupCourseResp": {
+        "schema.SignupCourseResp": {
             "type": "object",
             "properties": {
                 "course_name": {
@@ -1271,41 +1235,30 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.UserChangePassReq": {
+        "schema.StudentProfile": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
+                "student": {
+                    "type": "object",
+                    "properties": {
+                        "email": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "integer"
+                        },
+                        "username": {
+                            "type": "string"
+                        }
+                    }
                 },
-                "new_password": {
-                    "type": "string"
-                },
-                "old_password": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.UserChangePassResp": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.UserProfile": {
-            "type": "object",
-            "properties": {
-                "user": {
+                "student_data": {
                     "type": "object",
                     "properties": {
                         "cource": {
-                            "type": "integer"
-                        },
-                        "date_of_birth": {
                             "type": "string"
                         },
-                        "email": {
+                        "date_of_birth": {
                             "type": "string"
                         },
                         "gpa": {
@@ -1316,11 +1269,22 @@ const docTemplate = `{
                         },
                         "student_card": {
                             "type": "string"
-                        },
-                        "username": {
-                            "type": "string"
                         }
                     }
+                }
+            }
+        },
+        "schema.UserChangePassReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
                 }
             }
         }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Header, Card } from '../../components/shared';
 import { Quiz } from '../../components/Quiz';
@@ -6,7 +6,26 @@ import { mockCourses, mockModules } from '../../utils/mockData';
 import {
   module1_lesson1_content,
   module1_lesson2_content,
-  module1_lesson3_content
+  module1_lesson3_content,
+  module2_lesson1_content,
+  module2_lesson2_content,
+  module2_lesson3_content,
+  module2_lesson4_content,
+  module3_lesson1_content,
+  module3_lesson2_content,
+  module3_lesson3_content,
+  module3_lesson4_content,
+  module4_lesson1_content,
+  module4_lesson2_content,
+  module4_lesson3_content,
+  module5_lesson1_content,
+  module5_lesson2_content,
+  module5_lesson3_content,
+  module5_lesson4_content,
+  module6_lesson1_content,
+  module6_lesson2_content,
+  module6_lesson3_content,
+  module6_lesson4_content
 } from '../../data/pythonCourseFull';
 import {
   quiz1_basics,
@@ -15,6 +34,14 @@ import {
   exercise2_list_functions,
   exercise3_class
 } from '../../data/pythonCourse';
+import {
+  webLessonContentMap,
+  webLessonQuizMap
+} from '../../data/webCourseFull';
+import {
+  sqlLessonContentMap,
+  sqlLessonQuizMap
+} from '../../data/sqlCourseFull';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -24,7 +51,6 @@ import './Lesson.css';
 export const Lesson: React.FC = () => {
   const { courseId, lessonId } = useParams<{ courseId: string; lessonId: string }>();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'theory' | 'quiz' | 'practice'>('theory');
 
   const course = mockCourses.find(c => c.id === courseId);
   const courseModules = mockModules.filter(m => m.courseId === courseId);
@@ -56,15 +82,48 @@ export const Lesson: React.FC = () => {
 
   // Map lesson IDs to content from pythonCourseFull.ts
   const lessonContentMap: Record<string, any> = {
+    // Модуль 1: Основы Python
     'l1': module1_lesson1_content,
     'l2': module1_lesson2_content,
     'l3': module1_lesson3_content,
+    // Модуль 2: Переменные и типы данных
+    'l4': module2_lesson1_content,
+    'l5': module2_lesson2_content,
+    'l6': module2_lesson3_content,
+    'l7': module2_lesson4_content,
+    // Модуль 3: Условия и циклы
+    'l8': module3_lesson1_content,
+    'l9': module3_lesson2_content,
+    'l10': module3_lesson3_content,
+    'l11': module3_lesson4_content,
+    // Модуль 4: Функции
+    'l12': module4_lesson1_content,
+    'l13': module4_lesson2_content,
+    'p2': module4_lesson3_content,
+    // Модуль 5: Структуры данных
+    'l15': module5_lesson1_content,
+    'l16': module5_lesson2_content,
+    'l17': module5_lesson3_content,
+    'l18': module5_lesson4_content,
+    // Модуль 6: ООП
+    'l19': module6_lesson1_content,
+    'l20': module6_lesson2_content,
+    'l21': module6_lesson3_content,
+    'l14': module6_lesson4_content,
+    // Web-разработка lessons
+    ...webLessonContentMap,
+    // SQL lessons
+    ...sqlLessonContentMap,
   };
 
   // Map lesson IDs to quizzes
   const lessonQuizMap: Record<string, any> = {
     'q1': quiz1_basics,
     'l14': quiz3_oop,
+    // Web-разработка quizzes
+    ...webLessonQuizMap,
+    // SQL quizzes
+    ...sqlLessonQuizMap,
   };
 
   // Map lesson IDs to exercises
@@ -77,6 +136,30 @@ export const Lesson: React.FC = () => {
   const lessonContent = lessonContentMap[lessonId || ''];
   const lessonQuiz = lessonQuizMap[lessonId || ''];
   const lessonExercise = lessonExerciseMap[lessonId || ''];
+
+  // Find previous and next lessons
+  let prevLesson = null;
+  let nextLesson = null;
+  let currentLessonFound = false;
+
+  for (const module of courseModules) {
+    for (let i = 0; i < module.lessons.length; i++) {
+      if (currentLessonFound && !nextLesson) {
+        nextLesson = module.lessons[i];
+        break;
+      }
+
+      if (module.lessons[i].id === lessonId) {
+        currentLessonFound = true;
+        if (i > 0) {
+          prevLesson = module.lessons[i - 1];
+        }
+      } else if (!currentLessonFound) {
+        prevLesson = module.lessons[i];
+      }
+    }
+    if (nextLesson) break;
+  }
 
   const handleQuizComplete = (attempt: QuizAttempt) => {
     console.log('Quiz completed:', attempt);
@@ -98,7 +181,12 @@ export const Lesson: React.FC = () => {
         <div className="container">
           {/* Lesson Header */}
           <div className="lesson-header">
-            <button className="back-button" onClick={() => navigate(`/courses/${courseId}`)}>
+            <button
+              type="button"
+              className="back-button"
+              onClick={() => navigate(`/courses/${courseId}`)}
+              data-testid="lesson-back-button"
+            >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M12 16L6 10L12 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -121,50 +209,9 @@ export const Lesson: React.FC = () => {
             )}
           </div>
 
-          {/* Lesson Tabs */}
-          {(lessonContent || lessonQuiz || lessonExercise) && (
-            <div className="lesson-tabs">
-              {lessonContent && (
-                <button
-                  className={`tab ${activeTab === 'theory' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('theory')}
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M4 4H16M4 8H16M4 12H12M4 16H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  <span>Теория</span>
-                </button>
-              )}
-              {lessonQuiz && (
-                <button
-                  className={`tab ${activeTab === 'quiz' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('quiz')}
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.5"/>
-                    <path d="M10 6V10L13 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
-                  <span>Тест</span>
-                </button>
-              )}
-              {lessonExercise && (
-                <button
-                  className={`tab ${activeTab === 'practice' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('practice')}
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                    <path d="M7 10L9 12L13 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>Практика</span>
-                </button>
-              )}
-            </div>
-          )}
-
           {/* Lesson Content */}
           <div className="lesson-content">
-            {activeTab === 'theory' && lessonContent && (
+            {lessonContent && (
               <Card className="theory-card">
                 <div className="theory-content">
                   <ReactMarkdown
@@ -224,11 +271,11 @@ export const Lesson: React.FC = () => {
               </Card>
             )}
 
-            {activeTab === 'quiz' && lessonQuiz && (
+            {lessonQuiz && (
               <Quiz quiz={lessonQuiz} onComplete={handleQuizComplete} />
             )}
 
-            {activeTab === 'practice' && lessonExercise && (
+            {lessonExercise && (
               <Card className="practice-card">
                 <div className="practice-content">
                   <h3>{lessonExercise.title}</h3>
@@ -306,6 +353,43 @@ export const Lesson: React.FC = () => {
               </Card>
             )}
           </div>
+
+          {/* Lesson Navigation */}
+          {(prevLesson || nextLesson) && (
+            <div className="lesson-navigation">
+              {prevLesson && (
+                <button
+                  type="button"
+                  className="nav-button nav-prev"
+                  onClick={() => navigate(`/courses/${courseId}/lessons/${prevLesson.id}`)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M12 16L6 10L12 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <div className="nav-button-text">
+                    <span className="nav-label">Предыдущий урок</span>
+                    <span className="nav-title">{prevLesson.title}</span>
+                  </div>
+                </button>
+              )}
+
+              {nextLesson && (
+                <button
+                  type="button"
+                  className="nav-button nav-next"
+                  onClick={() => navigate(`/courses/${courseId}/lessons/${nextLesson.id}`)}
+                >
+                  <div className="nav-button-text">
+                    <span className="nav-label">Следующий урок</span>
+                    <span className="nav-title">{nextLesson.title}</span>
+                  </div>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M8 4L14 10L8 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </main>
     </div>

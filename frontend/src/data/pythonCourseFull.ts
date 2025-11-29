@@ -5,7 +5,7 @@
  * с теорией, примерами, упражнениями и тестами
  */
 
-import type { Quiz, QuizQuestion, CodeExercise, Lesson } from '../types';
+// Type imports are used for documentation purposes
 
 // =============================================================================
 // МОДУЛЬ 1: ОСНОВЫ PYTHON
@@ -855,4 +855,2003 @@ print(f"Итого: {total:,.2f} руб")`,
   ]
 };
 
-// Продолжение в следующих модулях...
+// =============================================================================
+// МОДУЛЬ 2: ПЕРЕМЕННЫЕ И ТИПЫ ДАННЫХ
+// =============================================================================
+
+export const module2_lesson1_content = {
+  id: 'l4',
+  moduleId: 'm2',
+  title: 'Переменные и присваивание',
+  type: 'video' as const,
+  duration: '18:30',
+  status: 'not-started' as const,
+  order: 1,
+
+  theory: `
+# Переменные и присваивание
+
+## Что такое переменная?
+
+Переменная — это именованный контейнер для хранения данных. Представьте её как коробку с ярлыком, в которую можно положить любое значение.
+
+\`\`\`python
+# Создание переменной
+name = "Иван"
+age = 25
+is_student = True
+\`\`\`
+
+**Ключевые моменты:**
+- Переменная создаётся при первом присваивании значения
+- В Python не нужно объявлять тип переменной
+- Имя переменной — это ярлык, значение — содержимое
+
+## Правила именования переменных
+
+### Допустимые имена:
+
+\`\`\`python
+# ✅ Правильно
+name = "Иван"
+user_age = 25
+numberOfStudents = 100
+_private = "данные"
+user2 = "test"
+NAME = "КОНСТАНТА"
+\`\`\`
+
+### Недопустимые имена:
+
+\`\`\`python
+# ❌ Неправильно
+2users = 10        # Не может начинаться с цифры
+user-name = "Иван"  # Дефис запрещён
+for = "test"       # Зарезервированное слово
+user name = "test" # Пробелы запрещены
+\`\`\`
+
+### Соглашения об именовании (PEP 8):
+
+**1. Snake_case для переменных и функций:**
+\`\`\`python
+user_name = "Иван"
+total_price = 1000
+def calculate_sum():
+    pass
+\`\`\`
+
+**2. UPPER_CASE для констант:**
+\`\`\`python
+MAX_SIZE = 100
+PI = 3.14159
+DATABASE_URL = "localhost"
+\`\`\`
+
+**3. Говорящие имена:**
+\`\`\`python
+# ❌ Плохо
+a = 25
+x = "Иван"
+tmp = 1000
+
+# ✅ Хорошо
+age = 25
+user_name = "Иван"
+total_price = 1000
+\`\`\`
+
+## Присваивание значений
+
+### Базовое присваивание:
+
+\`\`\`python
+x = 10
+name = "Python"
+is_active = True
+\`\`\`
+
+### Множественное присваивание:
+
+\`\`\`python
+# Несколько переменных одновременно
+x, y, z = 10, 20, 30
+print(x)  # 10
+print(y)  # 20
+print(z)  # 30
+
+# Одинаковое значение
+a = b = c = 0
+print(a, b, c)  # 0 0 0
+
+# Обмен значениями
+a = 5
+b = 10
+a, b = b, a  # Меняем местами!
+print(a, b)  # 10 5
+\`\`\`
+
+### Цепное присваивание:
+
+\`\`\`python
+# Присваивание справа налево
+x = y = z = 100
+print(x, y, z)  # 100 100 100
+\`\`\`
+
+## Динамическая типизация
+
+Python — язык с динамической типизацией. Переменная может менять тип:
+
+\`\`\`python
+x = 10          # x — целое число
+print(type(x))  # <class 'int'>
+
+x = "Привет"    # Теперь x — строка
+print(type(x))  # <class 'str'>
+
+x = [1, 2, 3]   # Теперь x — список
+print(type(x))  # <class 'list'>
+\`\`\`
+
+**Важно:** Хотя это возможно, не рекомендуется без необходимости менять тип переменной в программе.
+
+## Проверка типа переменной
+
+### Функция type():
+
+\`\`\`python
+age = 25
+name = "Иван"
+is_student = True
+
+print(type(age))        # <class 'int'>
+print(type(name))       # <class 'str'>
+print(type(is_student)) # <class 'bool'>
+\`\`\`
+
+### Функция isinstance():
+
+\`\`\`python
+age = 25
+
+print(isinstance(age, int))    # True
+print(isinstance(age, str))    # False
+print(isinstance(age, (int, float)))  # True (проверка нескольких типов)
+\`\`\`
+
+## Удаление переменных
+
+\`\`\`python
+x = 10
+print(x)  # 10
+
+del x
+# print(x)  # Ошибка! NameError: name 'x' is not defined
+\`\`\`
+
+## Область видимости (Scope)
+
+### Локальные переменные:
+
+\`\`\`python
+def my_function():
+    local_var = "Я локальная"
+    print(local_var)  # Работает
+
+my_function()
+# print(local_var)  # Ошибка! Переменная не видна снаружи
+\`\`\`
+
+### Глобальные переменные:
+
+\`\`\`python
+global_var = "Я глобальная"
+
+def my_function():
+    print(global_var)  # Можем читать глобальную переменную
+
+my_function()  # Я глобальная
+print(global_var)  # Я глобальная
+\`\`\`
+
+### Изменение глобальной переменной:
+
+\`\`\`python
+counter = 0
+
+def increment():
+    global counter  # Объявляем, что используем глобальную
+    counter += 1
+
+increment()
+increment()
+print(counter)  # 2
+\`\`\`
+
+## Практические примеры
+
+### Пример 1: Обмен значений
+
+\`\`\`python
+# Традиционный способ (в других языках)
+a = 5
+b = 10
+temp = a
+a = b
+b = temp
+print(a, b)  # 10 5
+
+# Python способ (элегантно!)
+a = 5
+b = 10
+a, b = b, a
+print(a, b)  # 10 5
+\`\`\`
+
+### Пример 2: Работа с несколькими значениями
+
+\`\`\`python
+# Распаковка значений из функции
+def get_user_info():
+    return "Иван", 25, "Москва"
+
+name, age, city = get_user_info()
+print(f"{name}, {age} лет, {city}")
+\`\`\`
+
+### Пример 3: Счётчики и аккумуляторы
+
+\`\`\`python
+# Счётчик
+count = 0
+count += 1  # count = count + 1
+count += 1
+print(count)  # 2
+
+# Аккумулятор
+total = 0
+total += 10
+total += 20
+total += 30
+print(total)  # 60
+
+# Строковый аккумулятор
+message = ""
+message += "Привет, "
+message += "мир!"
+print(message)  # Привет, мир!
+\`\`\`
+
+## Операторы присваивания
+
+\`\`\`python
+x = 10
+
+x += 5   # x = x + 5   -> 15
+x -= 3   # x = x - 3   -> 12
+x *= 2   # x = x * 2   -> 24
+x /= 4   # x = x / 4   -> 6.0
+x //= 2  # x = x // 2  -> 3.0
+x %= 2   # x = x % 2   -> 1.0
+x **= 3  # x = x ** 3  -> 1.0
+\`\`\`
+
+## Константы
+
+В Python нет настоящих констант, но есть соглашение:
+
+\`\`\`python
+# Константы пишутся ЗАГЛАВНЫМИ буквами
+PI = 3.14159
+MAX_USERS = 100
+DATABASE_URL = "localhost:5432"
+API_KEY = "abc123xyz"
+
+# Программист не должен изменять их значение
+# (но технически это возможно)
+\`\`\`
+
+## Частые ошибки
+
+### 1. Использование до объявления:
+
+\`\`\`python
+# ❌ Неправильно
+print(x)  # NameError: name 'x' is not defined
+x = 10
+
+# ✅ Правильно
+x = 10
+print(x)
+\`\`\`
+
+### 2. Опечатки в именах:
+
+\`\`\`python
+userName = "Иван"
+print(username)  # NameError! (регистр важен)
+\`\`\`
+
+### 3. Переприсваивание встроенных функций:
+
+\`\`\`python
+# ❌ Очень плохо!
+sum = 10  # Перезаписали встроенную функцию sum()
+list = [1, 2, 3]  # Перезаписали встроенный тип list
+
+# Теперь sum() и list() не работают!
+\`\`\`
+
+## Лучшие практики
+
+1. **Используйте понятные имена:**
+   \`\`\`python
+   # ❌ Плохо
+   x = 25
+
+   # ✅ Хорошо
+   user_age = 25
+   \`\`\`
+
+2. **Следуйте PEP 8:**
+   \`\`\`python
+   # ✅ snake_case для переменных
+   user_name = "Иван"
+   total_count = 100
+   \`\`\`
+
+3. **Не изменяйте тип переменной без необходимости:**
+   \`\`\`python
+   # ❌ Сбивает с толку
+   result = 10
+   result = "завершено"
+
+   # ✅ Лучше использовать разные переменные
+   count = 10
+   status = "завершено"
+   \`\`\`
+
+4. **Инициализируйте переменные:**
+   \`\`\`python
+   # ✅ Хорошо
+   total = 0
+   items = []
+   message = ""
+   \`\`\`
+  `,
+
+  keyPoints: [
+    'Переменная — именованный контейнер для хранения данных',
+    'Имена переменных: snake_case, без пробелов и спецсимволов',
+    'Python использует динамическую типизацию',
+    'type() и isinstance() для проверки типа',
+    'Множественное присваивание: x, y, z = 1, 2, 3',
+    'Операторы +=, -=, *=, /= для изменения значения'
+  ],
+
+  codeExamples: [
+    {
+      title: 'Создание и использование переменных',
+      code: `# Различные типы переменных
+name = "Анна"
+age = 28
+height = 1.65
+is_employed = True
+
+print(f"Имя: {name}")
+print(f"Возраст: {age}")
+print(f"Рост: {height} м")
+print(f"Работает: {is_employed}")`,
+      explanation: 'Демонстрирует создание переменных разных типов'
+    },
+    {
+      title: 'Множественное присваивание',
+      code: `# Присваивание нескольких значений
+x, y, z = 10, 20, 30
+
+# Обмен значений
+a, b = 5, 10
+a, b = b, a
+print(f"a = {a}, b = {b}")  # a = 10, b = 5`,
+      explanation: 'Элегантные способы работы с переменными в Python'
+    },
+    {
+      title: 'Операторы присваивания',
+      code: `count = 0
+count += 1  # count = count + 1
+count += 1
+print(f"Счётчик: {count}")  # 2
+
+total = 100
+total *= 2  # total = total * 2
+print(f"Итого: {total}")  # 200`,
+      explanation: 'Сокращённые операторы для изменения значений'
+    }
+  ]
+};
+
+export const module2_lesson2_content = {
+  id: 'l5',
+  moduleId: 'm2',
+  title: 'Числа: int и float',
+  type: 'video' as const,
+  duration: '22:45',
+  status: 'not-started' as const,
+  order: 2,
+
+  theory: `
+# Числа в Python: int и float
+
+## Целые числа (int)
+
+Целые числа — это числа без дробной части.
+
+\`\`\`python
+# Положительные числа
+age = 25
+year = 2025
+count = 1000000
+
+# Отрицательные числа
+temperature = -15
+debt = -5000
+
+# Ноль
+zero = 0
+\`\`\`
+
+### Особенности int в Python:
+
+**1. Неограниченная точность:**
+
+\`\`\`python
+# Python может работать с ОЧЕНЬ большими числами
+huge_number = 123456789012345678901234567890
+print(huge_number)  # Работает без проблем!
+
+# Факториал большого числа
+import math
+print(math.factorial(100))  # Огромное число!
+\`\`\`
+
+**2. Различные системы счисления:**
+
+\`\`\`python
+# Десятичная (обычная)
+decimal = 42
+
+# Двоичная (префикс 0b)
+binary = 0b101010
+print(binary)  # 42
+
+# Восьмеричная (префикс 0o)
+octal = 0o52
+print(octal)  # 42
+
+# Шестнадцатеричная (префикс 0x)
+hexadecimal = 0x2A
+print(hexadecimal)  # 42
+
+# Преобразование в разные системы
+num = 42
+print(bin(num))  # '0b101010' (двоичная)
+print(oct(num))  # '0o52' (восьмеричная)
+print(hex(num))  # '0x2a' (шестнадцатеричная)
+\`\`\`
+
+**3. Разделители для читаемости:**
+
+\`\`\`python
+# Можно использовать подчёркивания для удобства чтения
+million = 1_000_000
+billion = 1_000_000_000
+card_number = 1234_5678_9012_3456
+
+print(million)  # 1000000 (подчёркивания игнорируются)
+\`\`\`
+
+## Дробные числа (float)
+
+Числа с плавающей точкой — для дробных значений.
+
+\`\`\`python
+# Обычная запись
+pi = 3.14159
+temperature = -2.5
+price = 99.99
+
+# Научная нотация (экспоненциальная форма)
+speed_of_light = 3e8  # 3 * 10^8 = 300000000.0
+small_number = 1.5e-3  # 1.5 * 10^-3 = 0.0015
+avogadro = 6.022e23    # Число Авогадро
+
+print(speed_of_light)  # 300000000.0
+print(small_number)    # 0.0015
+\`\`\`
+
+### Особенности float:
+
+**1. Ограниченная точность:**
+
+\`\`\`python
+# Проблемы с точностью
+result = 0.1 + 0.2
+print(result)  # 0.30000000000000004 (!)
+
+# Проверка на равенство
+print(result == 0.3)  # False (!)
+
+# Правильная проверка
+import math
+print(math.isclose(result, 0.3))  # True
+\`\`\`
+
+**2. Специальные значения:**
+
+\`\`\`python
+# Бесконечность
+positive_inf = float('inf')
+negative_inf = float('-inf')
+
+print(positive_inf > 1000000)  # True
+print(negative_inf < -1000000) # True
+
+# "Не число" (Not a Number)
+nan = float('nan')
+print(nan == nan)  # False (!) NaN не равен даже самому себе
+
+# Проверка специальных значений
+import math
+print(math.isinf(positive_inf))  # True
+print(math.isnan(nan))           # True
+\`\`\`
+
+## Арифметические операции
+
+### Базовые операции:
+
+\`\`\`python
+a = 10
+b = 3
+
+# Сложение
+print(a + b)   # 13
+
+# Вычитание
+print(a - b)   # 7
+
+# Умножение
+print(a * b)   # 30
+
+# Деление (всегда возвращает float)
+print(a / b)   # 3.3333333333333335
+
+# Целочисленное деление (округление вниз)
+print(a // b)  # 3
+
+# Остаток от деления
+print(a % b)   # 1
+
+# Возведение в степень
+print(a ** b)  # 1000 (10^3)
+\`\`\`
+
+### Приоритет операций:
+
+\`\`\`python
+# Как в математике: скобки, степень, умножение/деление, сложение/вычитание
+result = 2 + 3 * 4    # 14 (не 20!)
+result = (2 + 3) * 4  # 20
+
+result = 2 ** 3 ** 2  # 512 (2^(3^2), справа налево!)
+result = (2 ** 3) ** 2  # 64
+
+# Используйте скобки для ясности!
+\`\`\`
+
+### Операции с разными типами:
+
+\`\`\`python
+# int + int = int
+print(5 + 3)      # 8 (int)
+
+# int + float = float
+print(5 + 3.0)    # 8.0 (float)
+
+# int / int = float (деление всегда даёт float)
+print(10 / 2)     # 5.0 (float)
+
+# int // int = int
+print(10 // 3)    # 3 (int)
+\`\`\`
+
+## Встроенные функции
+
+### Функции преобразования:
+
+\`\`\`python
+# Строка -> Число
+age = int("25")           # 25
+price = float("99.99")    # 99.99
+
+# Число -> Строка
+text = str(42)            # "42"
+
+# float -> int (отбрасывает дробную часть)
+x = int(3.9)              # 3
+y = int(-3.9)             # -3
+\`\`\`
+
+### Математические функции:
+
+\`\`\`python
+# Абсолютное значение
+print(abs(-10))      # 10
+print(abs(3.5))      # 3.5
+
+# Округление
+print(round(3.7))    # 4
+print(round(3.5))    # 4 (к ближайшему чётному!)
+print(round(3.14159, 2))  # 3.14 (2 знака после запятой)
+
+# Максимум и минимум
+print(max(1, 5, 3, 2))  # 5
+print(min(1, 5, 3, 2))  # 1
+
+# Степень
+print(pow(2, 3))     # 8 (2^3)
+print(pow(2, 3, 5))  # 3 (2^3 % 5)
+
+# Сумма
+numbers = [1, 2, 3, 4, 5]
+print(sum(numbers))  # 15
+\`\`\`
+
+## Модуль math
+
+Для продвинутых математических операций:
+
+\`\`\`python
+import math
+
+# Константы
+print(math.pi)       # 3.141592653589793
+print(math.e)        # 2.718281828459045
+
+# Округление
+print(math.ceil(3.2))   # 4 (вверх)
+print(math.floor(3.8))  # 3 (вниз)
+print(math.trunc(3.8))  # 3 (отбрасывание дробной части)
+
+# Корни и степени
+print(math.sqrt(16))    # 4.0 (квадратный корень)
+print(math.pow(2, 10))  # 1024.0 (степень)
+
+# Тригонометрия
+print(math.sin(math.pi / 2))  # 1.0
+print(math.cos(0))            # 1.0
+print(math.tan(math.pi / 4))  # 1.0
+
+# Логарифмы
+print(math.log(math.e))    # 1.0 (натуральный)
+print(math.log10(100))     # 2.0 (десятичный)
+print(math.log(8, 2))      # 3.0 (log₂(8))
+
+# Факториал
+print(math.factorial(5))  # 120
+
+# Наибольший общий делитель
+print(math.gcd(48, 18))  # 6
+\`\`\`
+
+## Работа с дробными числами
+
+### Модуль decimal (точные вычисления):
+
+\`\`\`python
+from decimal import Decimal
+
+# Обычный float (неточный)
+result = 0.1 + 0.2
+print(result)  # 0.30000000000000004
+
+# Decimal (точный)
+result = Decimal('0.1') + Decimal('0.2')
+print(result)  # 0.3
+
+# Финансовые расчёты
+price = Decimal('19.99')
+quantity = Decimal('3')
+total = price * quantity
+print(total)  # 59.97 (точно!)
+\`\`\`
+
+### Модуль fractions (дроби):
+
+\`\`\`python
+from fractions import Fraction
+
+# Создание дробей
+half = Fraction(1, 2)      # 1/2
+third = Fraction(1, 3)     # 1/3
+
+# Операции с дробями
+result = half + third
+print(result)  # 5/6
+
+# Из строки
+frac = Fraction('3/4')
+print(frac)  # 3/4
+
+# Из float
+frac = Fraction(0.25)
+print(frac)  # 1/4
+\`\`\`
+
+## Генерация случайных чисел
+
+\`\`\`python
+import random
+
+# Случайное целое число
+dice = random.randint(1, 6)  # От 1 до 6
+print(dice)
+
+# Случайное дробное число [0.0, 1.0)
+random_float = random.random()
+print(random_float)
+
+# Случайное дробное в диапазоне
+temperature = random.uniform(-10.0, 30.0)
+print(temperature)
+
+# Случайный выбор из списка
+colors = ['red', 'green', 'blue']
+color = random.choice(colors)
+print(color)
+\`\`\`
+
+## Практические примеры
+
+### Пример 1: Калькулятор скидок
+
+\`\`\`python
+price = float(input("Цена товара: "))
+discount = float(input("Скидка (%): "))
+
+# Расчёт скидки
+discount_amount = price * (discount / 100)
+final_price = price - discount_amount
+
+print(f"Скидка: {discount_amount:.2f} руб")
+print(f"Итоговая цена: {final_price:.2f} руб")
+\`\`\`
+
+### Пример 2: Конвертер валют
+
+\`\`\`python
+rubles = float(input("Сумма в рублях: "))
+exchange_rate = 0.011  # 1 RUB = 0.011 USD
+
+dollars = rubles * exchange_rate
+print(f"{rubles:.2f} RUB = {dollars:.2f} USD")
+\`\`\`
+
+### Пример 3: Площадь круга
+
+\`\`\`python
+import math
+
+radius = float(input("Радиус круга: "))
+
+area = math.pi * radius ** 2
+circumference = 2 * math.pi * radius
+
+print(f"Площадь: {area:.2f}")
+print(f"Длина окружности: {circumference:.2f}")
+\`\`\`
+  `,
+
+  keyPoints: [
+    'int — целые числа с неограниченной точностью',
+    'float — дробные числа с ограниченной точностью',
+    'Операции: +, -, *, /, //, %, **',
+    'round(), abs(), max(), min() — встроенные функции',
+    'math — модуль для продвинутой математики',
+    'Decimal для точных финансовых вычислений'
+  ],
+
+  codeExamples: [
+    {
+      title: 'Арифметические операции',
+      code: `a = 17
+b = 5
+
+print(f"{a} + {b} = {a + b}")   # 22
+print(f"{a} - {b} = {a - b}")   # 12
+print(f"{a} * {b} = {a * b}")   # 85
+print(f"{a} / {b} = {a / b}")   # 3.4
+print(f"{a} // {b} = {a // b}") # 3
+print(f"{a} % {b} = {a % b}")   # 2
+print(f"{a} ** {b} = {a ** b}") # 1419857`,
+      explanation: 'Все основные арифметические операции'
+    },
+    {
+      title: 'Работа с модулем math',
+      code: `import math
+
+# Константы и функции
+print(f"π = {math.pi:.4f}")
+print(f"e = {math.e:.4f}")
+
+# Округление
+print(f"ceil(3.2) = {math.ceil(3.2)}")
+print(f"floor(3.8) = {math.floor(3.8)}")
+
+# Корень и степень
+print(f"√16 = {math.sqrt(16)}")
+print(f"2^10 = {math.pow(2, 10)}")`,
+      explanation: 'Использование математических функций'
+    }
+  ]
+};
+
+export const module2_lesson3_content = {
+  id: 'l6',
+  moduleId: 'm2',
+  title: 'Строки и текст',
+  type: 'video' as const,
+  duration: '25:10',
+  status: 'not-started' as const,
+  order: 3,
+
+  theory: `# Строки и текст в Python
+
+Строки - один из самых важных типов данных. Используются для работы с текстом.
+
+## Создание строк
+
+\`\`\`python
+name = 'Иван'
+message = "Привет!"
+multiline = """Многострочный
+текст"""
+\`\`\`
+
+## Индексация и срезы
+
+\`\`\`python
+text = "Python"
+print(text[0])      # 'P'
+print(text[-1])     # 'n'
+print(text[0:3])    # 'Pyt'
+print(text[::-1])   # 'nohtyP' (реверс)
+\`\`\`
+
+## Методы строк
+
+\`\`\`python
+text = "  Hello World  "
+print(text.upper())     # HELLO WORLD
+print(text.lower())     # hello world
+print(text.strip())     # Hello World
+print(text.split())     # ['Hello', 'World']
+print('Python'.find('th'))  # 2
+print('Hi'.replace('i', 'ello'))  # 'Hello'
+\`\`\`
+
+## F-строки
+
+\`\`\`python
+name = "Анна"
+age = 25
+print(f"Меня зовут {name}, мне {age} лет")
+print(f"Через год: {age + 1}")
+\`\`\``,
+
+  keyPoints: [
+    'Строки неизменяемы (immutable)',
+    'Индексация начинается с 0',
+    'Срезы [start:end:step]',
+    'F-строки для форматирования',
+    'Методы: upper(), lower(), split(), join()',
+    'Конкатенация с + и повторение с *'
+  ],
+
+  codeExamples: [
+    {
+      title: 'Работа со строками',
+      code: `text = "Python Programming"
+print(f"Длина: {len(text)}")
+print(f"Верхний регистр: {text.upper()}")
+print(f"Слова: {text.split()}")
+print(f"Содержит 'Python': {'Python' in text}")`,
+      explanation: 'Основные операции со строками'
+    }
+  ]
+};
+
+export const module2_lesson4_content = {
+  id: 'l7',
+  moduleId: 'm2',
+  title: 'Логический тип и None',
+  type: 'video' as const,
+  duration: '16:20',
+  status: 'not-started' as const,
+  order: 4,
+
+  theory: `# Логический тип и None
+
+## Булевый тип (bool)
+
+\`\`\`python
+is_active = True
+is_closed = False
+
+# Логические операторы
+print(True and False)   # False
+print(True or False)    # True
+print(not True)         # False
+\`\`\`
+
+## Операторы сравнения
+
+\`\`\`python
+a, b = 10, 20
+print(a == b)  # False
+print(a != b)  # True
+print(a < b)   # True
+print(a >= b)  # False
+\`\`\`
+
+## Истинность значений
+
+\`\`\`python
+# Ложные (Falsy)
+bool(0), bool(""), bool([]), bool(None)  # все False
+
+# Истинные (Truthy)
+bool(1), bool("text"), bool([1])  # все True
+\`\`\`
+
+## None
+
+\`\`\`python
+result = None
+print(result is None)  # True
+
+def greet(name=None):
+    if name is None:
+        print("Привет, гость!")
+    else:
+        print(f"Привет, {name}!")
+\`\`\``,
+
+  keyPoints: [
+    'True и False - булевы значения',
+    'Логические операторы: and, or, not',
+    'Операторы сравнения: ==, !=, <, >, <=, >=',
+    'None - отсутствие значения',
+    'Пустые коллекции и 0 считаются False',
+    'is для проверки на None'
+  ],
+
+  codeExamples: []
+};
+
+// =============================================================================
+// МОДУЛЬ 3: УСЛОВИЯ И ЦИКЛЫ
+// =============================================================================
+
+export const module3_lesson1_content = {
+  id: 'l8',
+  moduleId: 'm3',
+  title: 'Условные операторы if, elif, else',
+  type: 'video' as const,
+  duration: '20:30',
+  status: 'not-started' as const,
+  order: 1,
+
+  theory: `# Условные операторы
+
+## if, elif, else
+
+\`\`\`python
+age = 18
+
+if age < 18:
+    print("Несовершеннолетний")
+elif age < 65:
+    print("Взрослый")
+else:
+    print("Пенсионер")
+\`\`\`
+
+## Множественные условия
+
+\`\`\`python
+age = 25
+has_license = True
+
+if age >= 18 and has_license:
+    print("Можете водить")
+elif age >= 18:
+    print("Нужны права")
+else:
+    print("Слишком молоды")
+\`\`\`
+
+## Тернарный оператор
+
+\`\`\`python
+age = 20
+status = "взрослый" if age >= 18 else "ребёнок"
+\`\`\``,
+
+  keyPoints: [
+    'if проверяет условие',
+    'elif для дополнительных условий',
+    'else для всех остальных случаев',
+    'Отступы обязательны!',
+    'Можно использовать and, or, not',
+    'Тернарный оператор для простых случаев'
+  ],
+
+  codeExamples: []
+};
+
+export const module3_lesson2_content = {
+  id: 'l9',
+  moduleId: 'm3',
+  title: 'Цикл while',
+  type: 'video' as const,
+  duration: '18:45',
+  status: 'not-started' as const,
+  order: 2,
+
+  theory: `# Цикл while
+
+## Базовый синтаксис
+
+\`\`\`python
+count = 0
+while count < 5:
+    print(count)
+    count += 1
+\`\`\`
+
+## break и continue
+
+\`\`\`python
+# break - выход из цикла
+while True:
+    answer = input("Продолжить? (да/нет): ")
+    if answer == "нет":
+        break
+
+# continue - пропуск итерации
+count = 0
+while count < 10:
+    count += 1
+    if count % 2 == 0:
+        continue
+    print(count)  # Только нечётные
+\`\`\``,
+
+  keyPoints: [
+    'while выполняется пока условие True',
+    'break - выход из цикла',
+    'continue - пропуск итерации',
+    'Осторожно с бесконечными циклами',
+    'Всегда изменяйте условие в цикле'
+  ],
+
+  codeExamples: []
+};
+
+export const module3_lesson3_content = {
+  id: 'l10',
+  moduleId: 'm3',
+  title: 'Цикл for',
+  type: 'video' as const,
+  duration: '22:15',
+  status: 'not-started' as const,
+  order: 3,
+
+  theory: `# Цикл for
+
+## Итерация по последовательностям
+
+\`\`\`python
+# По списку
+fruits = ['яблоко', 'банан', 'апельсин']
+for fruit in fruits:
+    print(fruit)
+
+# По строке
+for char in "Python":
+    print(char)
+
+# По словарю
+user = {'name': 'Иван', 'age': 25}
+for key, value in user.items():
+    print(f"{key}: {value}")
+\`\`\`
+
+## Функция range()
+
+\`\`\`python
+# От 0 до 4
+for i in range(5):
+    print(i)
+
+# От 1 до 10
+for i in range(1, 11):
+    print(i)
+
+# С шагом
+for i in range(0, 10, 2):
+    print(i)  # 0, 2, 4, 6, 8
+\`\`\`
+
+## enumerate() и zip()
+
+\`\`\`python
+# Индекс и значение
+fruits = ['яблоко', 'банан']
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+
+# Параллельные списки
+names = ['Иван', 'Мария']
+ages = [25, 30]
+for name, age in zip(names, ages):
+    print(f"{name}: {age}")
+\`\`\``,
+
+  keyPoints: [
+    'for итерирует по последовательностям',
+    'range(n) генерирует числа от 0 до n-1',
+    'enumerate() даёт индекс и значение',
+    'zip() объединяет несколько последовательностей',
+    'break и continue работают так же',
+    'for-else: else выполнится если не было break'
+  ],
+
+  codeExamples: []
+};
+
+export const module3_lesson4_content = {
+  id: 'l11',
+  moduleId: 'm3',
+  title: 'Вложенные циклы и list comprehension',
+  type: 'practice' as const,
+  duration: '24:30',
+  status: 'not-started' as const,
+  order: 4,
+
+  theory: `# Вложенные циклы и list comprehension
+
+## Вложенные циклы
+
+\`\`\`python
+# Таблица умножения
+for i in range(1, 4):
+    for j in range(1, 4):
+        print(f"{i} × {j} = {i*j}")
+    print()  # Пустая строка
+\`\`\`
+
+## List Comprehension
+
+\`\`\`python
+# Традиционный способ
+squares = []
+for i in range(10):
+    squares.append(i**2)
+
+# List comprehension (быстрее и элегантнее)
+squares = [i**2 for i in range(10)]
+
+# С условием
+evens = [x for x in range(20) if x % 2 == 0]
+
+# Вложенный
+matrix = [[i*j for j in range(3)] for i in range(3)]
+\`\`\`
+
+## Dictionary и Set Comprehension
+
+\`\`\`python
+# Dictionary comprehension
+squares_dict = {x: x**2 for x in range(5)}
+
+# Set comprehension
+unique_lengths = {len(word) for word in ['cat', 'dog', 'bird']}
+\`\`\``,
+
+  keyPoints: [
+    'Вложенные циклы для многомерных структур',
+    'List comprehension - элегантный способ создания списков',
+    'Синтаксис: [выражение for элемент in последовательность if условие]',
+    'Dict и set comprehension работают аналогично',
+    'Comprehension быстрее обычных циклов'
+  ],
+
+  codeExamples: []
+};
+
+// =============================================================================
+// МОДУЛЬ 4: ФУНКЦИИ
+// =============================================================================
+
+export const module4_lesson1_content = {
+  id: 'l12',
+  moduleId: 'm4',
+  title: 'Определение и вызов функций',
+  type: 'video' as const,
+  duration: '21:40',
+  status: 'not-started' as const,
+  order: 1,
+
+  theory: `# Функции в Python
+
+## Определение функции
+
+\`\`\`python
+def greet():
+    print("Привет!")
+
+greet()  # Вызов функции
+\`\`\`
+
+## Параметры и аргументы
+
+\`\`\`python
+def greet(name):
+    print(f"Привет, {name}!")
+
+greet("Иван")
+
+# Несколько параметров
+def add(a, b):
+    return a + b
+
+result = add(5, 3)
+print(result)  # 8
+\`\`\`
+
+## Значения по умолчанию
+
+\`\`\`python
+def greet(name="гость"):
+    print(f"Привет, {name}!")
+
+greet()          # Привет, гость!
+greet("Мария")   # Привет, Мария!
+\`\`\`
+
+## Возврат значений
+
+\`\`\`python
+def square(x):
+    return x ** 2
+
+result = square(5)  # 25
+
+# Множественный возврат
+def get_user():
+    return "Иван", 25, "Москва"
+
+name, age, city = get_user()
+\`\`\``,
+
+  keyPoints: [
+    'def определяет функцию',
+    'Параметры в скобках',
+    'return возвращает значение',
+    'Функция может возвращать несколько значений',
+    'Параметры по умолчанию',
+    'Функции - объекты первого класса'
+  ],
+
+  codeExamples: []
+};
+
+export const module4_lesson2_content = {
+  id: 'l13',
+  moduleId: 'm4',
+  title: 'Область видимости и документация',
+  type: 'video' as const,
+  duration: '19:25',
+  status: 'not-started' as const,
+  order: 2,
+
+  theory: `# Область видимости и документация
+
+## Локальная и глобальная область
+
+\`\`\`python
+x = 10  # Глобальная
+
+def func():
+    x = 5  # Локальная
+    print(x)  # 5
+
+func()
+print(x)  # 10
+
+# Изменение глобальной
+def modify():
+    global x
+    x = 20
+
+modify()
+print(x)  # 20
+\`\`\`
+
+## Docstrings
+
+\`\`\`python
+def calculate_area(radius):
+    """
+    Вычисляет площадь круга.
+
+    Args:
+        radius: Радиус круга
+
+    Returns:
+        Площадь круга
+    """
+    import math
+    return math.pi * radius ** 2
+
+print(calculate_area.__doc__)
+\`\`\`
+
+## Аннотации типов
+
+\`\`\`python
+def greet(name: str) -> str:
+    return f"Привет, {name}!"
+
+def add(a: int, b: int) -> int:
+    return a + b
+\`\`\``,
+
+  keyPoints: [
+    'Локальные переменные видны только внутри функции',
+    'global для изменения глобальных переменных',
+    'Docstrings документируют функции',
+    'Аннотации типов улучшают читаемость',
+    'LEGB: Local, Enclosing, Global, Built-in'
+  ],
+
+  codeExamples: []
+};
+
+export const module4_lesson3_content = {
+  id: 'p2',
+  moduleId: 'm4',
+  title: 'Продвинутые возможности функций',
+  type: 'practice' as const,
+  duration: '23:50',
+  status: 'not-started' as const,
+  order: 3,
+
+  theory: `# Продвинутые возможности функций
+
+## *args и **kwargs
+
+\`\`\`python
+# *args - произвольное кол-во позиционных аргументов
+def sum_all(*args):
+    return sum(args)
+
+print(sum_all(1, 2, 3, 4))  # 10
+
+# **kwargs - произвольное кол-во именованных аргументов
+def print_info(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_info(name="Иван", age=25, city="Москва")
+\`\`\`
+
+## Lambda функции
+
+\`\`\`python
+# Обычная функция
+def square(x):
+    return x ** 2
+
+# Lambda (анонимная функция)
+square = lambda x: x ** 2
+
+# Использование с map, filter
+numbers = [1, 2, 3, 4, 5]
+squares = list(map(lambda x: x**2, numbers))
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+\`\`\`
+
+## Декораторы (введение)
+
+\`\`\`python
+def uppercase(func):
+    def wrapper():
+        result = func()
+        return result.upper()
+    return wrapper
+
+@uppercase
+def greet():
+    return "привет"
+
+print(greet())  # ПРИВЕТ
+\`\`\``,
+
+  keyPoints: [
+    '*args для переменного числа аргументов',
+    '**kwargs для именованных аргументов',
+    'Lambda для коротких функций',
+    'map() и filter() для функционального программирования',
+    'Декораторы модифицируют поведение функций'
+  ],
+
+  codeExamples: []
+};
+
+// =============================================================================
+// МОДУЛЬ 5: СТРУКТУРЫ ДАННЫХ
+// =============================================================================
+
+export const module5_lesson1_content = {
+  id: 'l15',
+  moduleId: 'm5',
+  title: 'Списки (lists)',
+  type: 'video' as const,
+  duration: '26:20',
+  status: 'not-started' as const,
+  order: 1,
+
+  theory: `# Списки в Python
+
+## Создание списков
+
+\`\`\`python
+# Пустой список
+empty = []
+
+# Список чисел
+numbers = [1, 2, 3, 4, 5]
+
+# Смешанный список
+mixed = [1, "текст", 3.14, True]
+
+# С помощью list()
+letters = list("Python")  # ['P', 'y', 't', 'h', 'o', 'n']
+\`\`\`
+
+## Доступ к элементам
+
+\`\`\`python
+fruits = ['яблоко', 'банан', 'апельсин']
+
+print(fruits[0])    # 'яблоко'
+print(fruits[-1])   # 'апельсин'
+print(fruits[0:2])  # ['яблоко', 'банан']
+\`\`\`
+
+## Методы списков
+
+\`\`\`python
+numbers = [1, 2, 3]
+
+# Добавление
+numbers.append(4)        # [1, 2, 3, 4]
+numbers.insert(0, 0)     # [0, 1, 2, 3, 4]
+numbers.extend([5, 6])   # [0, 1, 2, 3, 4, 5, 6]
+
+# Удаление
+numbers.remove(0)        # Удалить 0
+numbers.pop()            # Удалить последний
+del numbers[0]           # Удалить по индексу
+
+# Другие методы
+numbers.sort()           # Сортировка
+numbers.reverse()        # Реверс
+count = numbers.count(2) # Подсчёт
+index = numbers.index(3) # Найти индекс
+\`\`\``,
+
+  keyPoints: [
+    'Списки изменяемы (mutable)',
+    'Могут содержать элементы разных типов',
+    'Индексация и срезы как у строк',
+    'append(), extend(), insert() для добавления',
+    'remove(), pop(), del для удаления',
+    'sort(), reverse(), count(), index()'
+  ],
+
+  codeExamples: []
+};
+
+export const module5_lesson2_content = {
+  id: 'l16',
+  moduleId: 'm5',
+  title: 'Кортежи (tuples) и множества (sets)',
+  type: 'video' as const,
+  duration: '21:30',
+  status: 'not-started' as const,
+  order: 2,
+
+  theory: `# Кортежи и множества
+
+## Кортежи (неизменяемые списки)
+
+\`\`\`python
+# Создание
+point = (10, 20)
+single = (42,)  # Одноэлементный кортеж
+
+# Распаковка
+x, y = point
+
+# Кортежи неизменяемы
+# point[0] = 15  # Ошибка!
+\`\`\`
+
+## Множества (уникальные элементы)
+
+\`\`\`python
+# Создание
+numbers = {1, 2, 3, 3, 2, 1}  # {1, 2, 3}
+empty = set()  # Пустое множество
+
+# Операции
+numbers.add(4)
+numbers.remove(1)
+
+# Математические операции
+a = {1, 2, 3}
+b = {3, 4, 5}
+
+print(a | b)  # Объединение: {1, 2, 3, 4, 5}
+print(a & b)  # Пересечение: {3}
+print(a - b)  # Разность: {1, 2}
+print(a ^ b)  # Симметрическая разность: {1, 2, 4, 5}
+\`\`\``,
+
+  keyPoints: [
+    'Кортежи неизменяемы, быстрее списков',
+    'Множества хранят только уникальные элементы',
+    'Множества неупорядочены',
+    'Операции над множествами: |, &, -, ^',
+    'Кортежи можно использовать как ключи словаря'
+  ],
+
+  codeExamples: []
+};
+
+export const module5_lesson3_content = {
+  id: 'l17',
+  moduleId: 'm5',
+  title: 'Словари (dictionaries)',
+  type: 'video' as const,
+  duration: '24:45',
+  status: 'not-started' as const,
+  order: 3,
+
+  theory: `# Словари в Python
+
+## Создание словарей
+
+\`\`\`python
+# Пустой
+empty = {}
+
+# С данными
+user = {
+    'name': 'Иван',
+    'age': 25,
+    'city': 'Москва'
+}
+
+# С помощью dict()
+user = dict(name='Иван', age=25)
+\`\`\`
+
+## Доступ и изменение
+
+\`\`\`python
+print(user['name'])      # 'Иван'
+print(user.get('age'))   # 25
+print(user.get('email', 'Не указан'))  # Значение по умолчанию
+
+user['age'] = 26         # Изменение
+user['email'] = 'ivan@mail.ru'  # Добавление
+\`\`\`
+
+## Методы словарей
+
+\`\`\`python
+# Ключи, значения, пары
+print(user.keys())    # dict_keys(['name', 'age', 'city'])
+print(user.values())  # dict_values(['Иван', 25, 'Москва'])
+print(user.items())   # dict_items([...])
+
+# Итерация
+for key, value in user.items():
+    print(f"{key}: {value}")
+
+# Удаление
+del user['city']
+email = user.pop('email')
+\`\`\``,
+
+  keyPoints: [
+    'Словарь - пары ключ:значение',
+    'Ключи должны быть неизменяемыми',
+    'Доступ по ключу: dict[key] или dict.get(key)',
+    'keys(), values(), items() для итерации',
+    'Быстрый поиск по ключу (O(1))',
+    'Dictionary comprehension'
+  ],
+
+  codeExamples: []
+};
+
+export const module5_lesson4_content = {
+  id: 'l18',
+  moduleId: 'm5',
+  title: 'Работа с вложенными структурами',
+  type: 'practice' as const,
+  duration: '22:10',
+  status: 'not-started' as const,
+  order: 4,
+
+  theory: `# Вложенные структуры данных
+
+## Вложенные списки (матрицы)
+
+\`\`\`python
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+print(matrix[0][1])  # 2
+print(matrix[1])     # [4, 5, 6]
+
+# Итерация
+for row in matrix:
+    for item in row:
+        print(item, end=' ')
+    print()
+\`\`\`
+
+## Вложенные словари
+
+\`\`\`python
+users = {
+    'user1': {'name': 'Иван', 'age': 25},
+    'user2': {'name': 'Мария', 'age': 30}
+}
+
+print(users['user1']['name'])  # 'Иван'
+
+# Итерация
+for user_id, info in users.items():
+    print(f"{user_id}: {info['name']}")
+\`\`\`
+
+## Комбинированные структуры
+
+\`\`\`python
+data = {
+    'users': [
+        {'name': 'Иван', 'scores': [85, 90, 88]},
+        {'name': 'Мария', 'scores': [92, 95, 89]}
+    ]
+}
+
+# Средний балл первого пользователя
+avg = sum(data['users'][0]['scores']) / len(data['users'][0]['scores'])
+\`\`\``,
+
+  keyPoints: [
+    'Списки могут содержать списки',
+    'Словари могут содержать словари',
+    'JSON-подобные структуры данных',
+    'Множественная индексация: data[i][j][k]',
+    'Важно понимать структуру данных'
+  ],
+
+  codeExamples: []
+};
+
+// =============================================================================
+// МОДУЛЬ 6: ОБЪЕКТНО-ОРИЕНТИРОВАННОЕ ПРОГРАММИРОВАНИЕ
+// =============================================================================
+
+export const module6_lesson1_content = {
+  id: 'l19',
+  moduleId: 'm6',
+  title: 'Классы и объекты',
+  type: 'video' as const,
+  duration: '28:40',
+  status: 'not-started' as const,
+  order: 1,
+
+  theory: `# Классы и объекты
+
+## Создание класса
+
+\`\`\`python
+class Dog:
+    # Конструктор
+    def __init__(self, name, age):
+        self.name = name  # Атрибут
+        self.age = age
+
+    # Метод
+    def bark(self):
+        print(f"{self.name} говорит: Гав!")
+
+# Создание объекта
+my_dog = Dog("Шарик", 3)
+print(my_dog.name)  # Шарик
+my_dog.bark()       # Шарик говорит: Гав!
+\`\`\`
+
+## Атрибуты класса и экземпляра
+
+\`\`\`python
+class Dog:
+    species = "Canis familiaris"  # Атрибут класса
+
+    def __init__(self, name):
+        self.name = name  # Атрибут экземпляра
+
+dog1 = Dog("Шарик")
+print(dog1.species)  # Canis familiaris
+print(Dog.species)   # Canis familiaris
+\`\`\`
+
+## Методы
+
+\`\`\`python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def greet(self):
+        return f"Привет, я {self.name}"
+
+    def have_birthday(self):
+        self.age += 1
+        return f"Мне теперь {self.age}"
+
+person = Person("Иван", 25)
+print(person.greet())
+print(person.have_birthday())
+\`\`\``,
+
+  keyPoints: [
+    'class определяет класс',
+    '__init__ - конструктор класса',
+    'self - ссылка на текущий объект',
+    'Атрибуты хранят данные',
+    'Методы - функции внутри класса',
+    'Инкапсуляция данных и логики'
+  ],
+
+  codeExamples: []
+};
+
+export const module6_lesson2_content = {
+  id: 'l20',
+  moduleId: 'm6',
+  title: 'Наследование',
+  type: 'video' as const,
+  duration: '25:15',
+  status: 'not-started' as const,
+  order: 2,
+
+  theory: `# Наследование
+
+## Базовое наследование
+
+\`\`\`python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name} говорит: Гав!"
+
+class Cat(Animal):
+    def speak(self):
+        return f"{self.name} говорит: Мяу!"
+
+dog = Dog("Шарик")
+cat = Cat("Мурка")
+print(dog.speak())  # Шарик говорит: Гав!
+print(cat.speak())  # Мурка говорит: Мяу!
+\`\`\`
+
+## super()
+
+\`\`\`python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+class Student(Person):
+    def __init__(self, name, age, student_id):
+        super().__init__(name, age)
+        self.student_id = student_id
+
+student = Student("Иван", 20, "S12345")
+\`\`\``,
+
+  keyPoints: [
+    'Наследование позволяет повторно использовать код',
+    'Дочерний класс наследует методы и атрибуты',
+    'super() вызывает методы родительского класса',
+    'Переопределение методов (override)',
+    'isinstance() и issubclass() для проверки'
+  ],
+
+  codeExamples: []
+};
+
+export const module6_lesson3_content = {
+  id: 'l21',
+  moduleId: 'm6',
+  title: 'Инкапсуляция и свойства',
+  type: 'video' as const,
+  duration: '22:55',
+  status: 'not-started' as const,
+  order: 3,
+
+  theory: `# Инкапсуляция и свойства
+
+## Приватные атрибуты
+
+\`\`\`python
+class BankAccount:
+    def __init__(self, balance):
+        self.__balance = balance  # Приватный атрибут
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+
+    def get_balance(self):
+        return self.__balance
+
+account = BankAccount(1000)
+account.deposit(500)
+print(account.get_balance())  # 1500
+# print(account.__balance)  # Ошибка!
+\`\`\`
+
+## Свойства (properties)
+
+\`\`\`python
+class Person:
+    def __init__(self, name):
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        if len(value) > 0:
+            self._name = value
+
+person = Person("Иван")
+print(person.name)  # Иван
+person.name = "Пётр"  # Использует setter
+\`\`\``,
+
+  keyPoints: [
+    'Инкапсуляция скрывает внутреннюю реализацию',
+    '_ - защищённый атрибут (соглашение)',
+    '__ - приватный атрибут (name mangling)',
+    '@property создаёт getter',
+    '@name.setter создаёт setter',
+    'Контроль доступа к данным'
+  ],
+
+  codeExamples: []
+};
+
+export const module6_lesson4_content = {
+  id: 'l14',
+  moduleId: 'm6',
+  title: 'Магические методы и полиморфизм',
+  type: 'practice' as const,
+  duration: '26:30',
+  status: 'not-started' as const,
+  order: 4,
+
+  theory: `# Магические методы и полиморфизм
+
+## Магические методы
+
+\`\`\`python
+class Vector:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return f"Vector({self.x}, {self.y})"
+
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+v1 = Vector(1, 2)
+v2 = Vector(3, 4)
+v3 = v1 + v2  # Использует __add__
+print(v3)     # Vector(4, 6)
+\`\`\`
+
+## Полиморфизм
+
+\`\`\`python
+class Cat:
+    def speak(self):
+        return "Мяу"
+
+class Dog:
+    def speak(self):
+        return "Гав"
+
+def animal_sound(animal):
+    print(animal.speak())
+
+animal_sound(Cat())  # Мяу
+animal_sound(Dog())  # Гав
+\`\`\`
+
+## Популярные магические методы
+
+\`\`\`python
+__init__    # Конструктор
+__str__     # Строковое представление
+__repr__    # Представление для разработчика
+__len__     # len(obj)
+__getitem__ # obj[key]
+__setitem__ # obj[key] = value
+__add__     # obj1 + obj2
+__eq__      # obj1 == obj2
+__lt__      # obj1 < obj2
+\`\`\``,
+
+  keyPoints: [
+    'Магические методы начинаются и заканчиваются с __',
+    '__str__ для удобного вывода',
+    '__add__, __sub__ для операторов',
+    '__eq__, __lt__ для сравнений',
+    'Полиморфизм - один интерфейс, разные реализации',
+    'Duck typing в Python'
+  ],
+
+  codeExamples: []
+};
