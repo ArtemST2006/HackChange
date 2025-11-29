@@ -167,13 +167,25 @@ type HomeworkResp struct {
 	Professor   string     `json:"professor"`
 	Description string     `json:"description"`
 	Mark        int        `json:"mark"`
-	Files       []struct{} // тут надо будет сделать
+	HomeworkID  string     `json:"homework_id,omitempty"`
+	Files       []HomeworkFile `json:"files"`
 }
 
 type HomeworkPost struct {
 	CourseName string     `json:"course_name"`
 	LessonName string     `json:"lesson_name"`
 	Email      string     `json:"email"`
-	Files      []struct{} // тут надо будет сделать
+	Files      []HomeworkFile `json:"files"`
+	HomeworkID string         `json:"homework_id,omitempty"`
 
+}
+
+type HomeworkFile struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
+type HomeworkUploadFile struct {
+	Name string
+	Data []byte
 }

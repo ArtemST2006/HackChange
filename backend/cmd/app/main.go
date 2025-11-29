@@ -32,9 +32,9 @@ func main() {
 
 	
 
-	repository := repository.NewRepository(db) //инициализация репозитория
-    service := service.NewService(repository) //инициализация сервисов
-	handler := handlers.NewHandler(service) //инициализация хендлеров
+	repository := repository.NewRepository(db, log) //инициализация репозитория
+    service := service.NewService(repository, log) //инициализация сервисов
+	handler := handlers.NewHandler(service, log) //инициализация хендлеров
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)

@@ -107,6 +107,7 @@ type ProfessorData struct {
 
 func (ProfessorData) TableName() string { return "professor_data" }
 
+<<<<<<< HEAD
 // результат JOIN для комментариев курсов
 type CommentCourseWithUser struct {
 	ID        uint      `gorm:"column:id"`
@@ -134,3 +135,15 @@ type CommentLessonWithUser struct {
 func (CommentLessonWithUser) TableName() string {
 	return "comments_lessons"
 }
+=======
+
+type RefreshToken struct {
+	ID        uint      `gorm:"column:id;primaryKey;autoIncrement"`
+	UserID    uint      `gorm:"column:user_id;not null"`
+	TokenHash string    `gorm:"column:token_hash;type:text;not null"`
+	ExpiresAt time.Time `gorm:"column:expires_at;type:timestamptz;not null"`
+	Revoke    bool      `gorm:"column:revoke;type:boolean;default:false"`
+}
+
+func (RefreshToken) TableName() string { return "refresh_tokens" }
+>>>>>>> origin/auth
