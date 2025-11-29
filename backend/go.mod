@@ -9,6 +9,7 @@ require (
 	github.com/go-chi/cors v1.2.2
 	github.com/go-chi/httprate v0.15.0
 	github.com/go-chi/jwtauth/v5 v5.3.3
+	github.com/minio/minio-go/v7 v7.0.97
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.8.1
 	golang.org/x/crypto v0.38.0
@@ -46,7 +47,6 @@ require (
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/minio/crc64nvme v1.1.0 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
-	github.com/minio/minio-go/v7 v7.0.97 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/rs/xid v1.6.0 // indirect

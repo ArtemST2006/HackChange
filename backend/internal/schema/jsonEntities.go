@@ -50,16 +50,19 @@ type RefreshResp struct {
 	ExpiresIn    int    `json:"expires_in"`
 }
 
-type UserProfile struct {
-	User struct {
-		Email       string  `json:"email"`
+type StudentProfile struct {
+	Student struct {
+		Id 			uint 	`json:"id"`
 		Username    string  `json:"username"`
+		Email       string  `json:"email"`
+	} `json:"student"`
+	StudentData struct {
 		Name        string  `json:"name"`
 		StudentCard string  `json:"student_card"`
-		DateOfBirth string  `json:"date_of_birth"`
-		Cource      int     `json:"cource"`
-		GPA         float64 `json:"gpa"`
-	} `json:"user"`
+		DateOfBirth *string  `json:"date_of_birth"`
+		Course      string  `json:"cource"`
+		GPA         *float32 `json:"gpa"`
+	} `json:"student_data"`
 }
 
 type UserChangePassReq struct {
@@ -68,14 +71,11 @@ type UserChangePassReq struct {
 	HashedNewPassword string `json:"new_password"`
 }
 
-type UserChangePassResp struct {
-	Email string `json:"email"`
-}
-
 type CourseDB struct {
 	Name        string `json:"name"`
 	Professor   string `json:"professor"`
 	Description string `json:"description"`
+	Type        string `json:"type"`
 }
 
 type CourseReq struct {
