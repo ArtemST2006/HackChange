@@ -20,14 +20,23 @@ type Courses interface {
 	SignupCourse(schema.SignupCourseReq) (schema.SignupCourseResp, error)
 }
 
+type User interface {
+	GetUser(uint) (*schema.StudentProfile, error)
+	UpdateUser(uint, *schema.StudentProfile) (*uint, error)
+	GetUserCourses(uint) (*[]schema.CourseDB, error)
+	UserChangePass(uint, *schema.UserChangePassReq) (*uint, error)
+}
+
 type Service struct {
 	Authorization
 	Courses
+	User
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		Authorization: services.NewAuthService(repo.Authorization),
 		Courses:       services.NewCoursesService(repo.Courses),
+		User:          services.NewUserService(repo.User),
 	}
 }

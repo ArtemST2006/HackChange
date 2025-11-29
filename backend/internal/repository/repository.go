@@ -17,8 +17,16 @@ type Courses interface {
 	SignupCourse(schema.SignupCourseReq) (schema.SignupCourseResp, error)
 }
 
+type User interface {
+	GetUser(uint) (*schema.Student, *schema.StudentData, error)
+	UpdateUser(userID uint, user *schema.StudentProfile) error
+	GetUserCourses(userID uint) (*[]schema.CourseDB, error)
+	UserChangePass(userID uint, passwords *schema.UserChangePassReq) error
+}
+
 type Repository struct {
 	Authorization
+	User
 	Courses
 }
 
@@ -27,5 +35,6 @@ func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
 		Authorization: nil,
 		Courses:       postgres.NewCoursesRepository(db),
+		User:          NewUserRepo(db),
 	}
 }
