@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/ArtemST2006/HackChange/internal/repository"
+	miniorep "github.com/ArtemST2006/HackChange/internal/repository/miniorep"
 	"github.com/ArtemST2006/HackChange/internal/schema"
 	"github.com/ArtemST2006/HackChange/internal/services/services"
 	"github.com/go-chi/jwtauth/v5"
@@ -21,10 +22,12 @@ type Authorization interface {
 
 type Service struct {
 	Authorization
+	MinioService *services.HomeworkService
 }
 
 func NewService(repo *repository.Repository, log *slog.Logger) *Service {
 	return &Service{
-		Authorization: services.NewAuthService(repo.Authorization, log),
+		Authorization:  services.NewAuthService(repo.Authorization, log),
+		MinioService:   services.NewHomeworkService(repo.Minio.(*miniorep.MinioRepository)),
 	}
 }
