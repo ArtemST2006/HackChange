@@ -32,17 +32,7 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentIDraw, ok := claims["user_id"]
-	var studentID uint = studentIDraw
-	if !ok {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
-		return
-	}
+	studentID := uint(claims["user_id"].(uint))
 
 	profile, err := h.services.User.GetUser(studentID)
 	if err != nil {
@@ -84,17 +74,7 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentIDraw, ok := claims["id"]
-	var studentID uint = studentIDraw
-	if !ok {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
-		return
-	}
+	studentID := uint(claims["user_id"].(uint))
 
 	var updateData schema.StudentProfile
 	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
@@ -148,17 +128,7 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentIDraw, ok := claims["id"]
-	var studentID uint = studentIDraw
-	if !ok {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
-		return
-	}
+	studentID := uint(claims["user_id"].(uint))
 
 	courses, err := h.services.User.GetUserCourses(studentID)
 	if err != nil {
@@ -201,17 +171,7 @@ func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentIDraw, ok := claims["id"]
-	var studentID uint = studentIDraw
-	if !ok {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
-		return
-	}
+	studentID := uint(claims["user_id"].(uint))
 
 	var updateData schema.UserChangePassReq
 	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
