@@ -4,7 +4,6 @@ import (
 	"net/http"
 )
 
-
 // GetUserProfile godoc
 // @Summary      Получить профиль пользователя
 // @Tags         users
@@ -17,7 +16,7 @@ import (
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /user/profile [get]
 func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // EditUserProfile godoc
@@ -33,8 +32,8 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /user/edit [post]
 func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
-
-}
+	panic("implement me")
+}	
 
 // UserCourses godoc
 // @Summary      Получить курсы на которые записан пользователь
@@ -48,7 +47,7 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /user/courses [get]
 func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // UserChangePass godoc
@@ -65,5 +64,5 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /user/change_pass [post]
 func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }

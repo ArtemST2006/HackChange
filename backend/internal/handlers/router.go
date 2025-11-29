@@ -1,15 +1,15 @@
 package handlers
 
 import (
- "net/http"
- "time"
+	"net/http"
+	"time"
 
- "github.com/ArtemST2006/HackChange/internal/services"
- "github.com/go-chi/chi/v5"
- "github.com/go-chi/chi/v5/middleware"
- "github.com/go-chi/cors"
- "github.com/go-chi/httprate"
- httpSwagger "github.com/swaggo/http-swagger"
+	service "github.com/ArtemST2006/HackChange/internal/services"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Handler struct {
@@ -38,7 +38,7 @@ func (h *Handler) InitRoutes() http.Handler {
 	}))
 	// Хрен знает правльно ли я написал роуты, но вроде так должно работать (Это все андрей)
 	// Артем, проверь особенно get запросы(нужны ли они)
-	r.Get("/swagger/*any", httpSwagger.WrapHandler())
+	r.Get("/swagger/*", httpSwagger.Handler())
 
 	r.Route("/auth", func(auth chi.Router) {
 		auth.Post("/register", h.Register)

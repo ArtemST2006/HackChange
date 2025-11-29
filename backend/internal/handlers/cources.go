@@ -13,7 +13,7 @@ import (
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /courses [get]
 func (h *Handler) GetAllCourses(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // GetCourseDashboard godoc
@@ -28,7 +28,7 @@ func (h *Handler) GetAllCourses(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/dashboard [get]
 func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // PostCourseComment godoc
@@ -44,7 +44,7 @@ func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/comment [post]
 func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // GetCourseComment godoc
@@ -59,7 +59,7 @@ func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/comment [get]
 func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // GetCourseLessons godoc
@@ -74,7 +74,7 @@ func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lessons [get]
 func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // GetCourseLessons godoc
@@ -89,7 +89,7 @@ func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson [get]
 func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // PostLessonComment godoc
@@ -105,7 +105,7 @@ func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/comment [post]
 func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // GetLessonComment godoc
@@ -120,7 +120,7 @@ func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/comment [get]
 func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // SignupCourse godoc
@@ -136,7 +136,7 @@ func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/sign_up [post]
 func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // GetHomework godoc
@@ -152,7 +152,7 @@ func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/homework [get]
 func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // PostHomework godoc
@@ -169,5 +169,5 @@ func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/homework [post]
 func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
