@@ -1,0 +1,853 @@
+definitions:
+  entities.CommentResp:
+    properties:
+      comment:
+        type: string
+      username:
+        type: string
+    type: object
+  entities.CourceCommentGet:
+    properties:
+      course_name:
+        type: string
+    type: object
+  entities.CourceCommentReq:
+    properties:
+      comment:
+        type: string
+      course_name:
+        type: string
+    type: object
+  entities.Course:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      professor:
+        type: string
+    type: object
+  entities.CourseReq:
+    properties:
+      course_name:
+        type: string
+    type: object
+  entities.DashboardResponse:
+    properties:
+      course:
+        $ref: '#/definitions/entities.Course'
+    type: object
+  entities.ErrorResponse:
+    properties:
+      error:
+        properties:
+          code:
+            type: integer
+          message:
+            type: string
+        type: object
+    type: object
+  entities.HomeworkReq:
+    properties:
+      course_name:
+        type: string
+      email:
+        type: string
+      lesson_name:
+        type: string
+    type: object
+  entities.HomeworkResp:
+    properties:
+      course_name:
+        type: string
+      description:
+        type: string
+      files:
+        description: тут надо будет сделать
+        items:
+          type: object
+        type: array
+      lesson_name:
+        type: string
+      mark:
+        type: integer
+      professor:
+        type: string
+    type: object
+  entities.LessonCommentGet:
+    properties:
+      course_name:
+        type: string
+      lesson_name:
+        type: string
+    type: object
+  entities.LessonCommentReq:
+    properties:
+      comment:
+        type: string
+      course_name:
+        type: string
+    type: object
+  entities.LessonReq:
+    properties:
+      course_name:
+        type: string
+      lesson_name:
+        type: string
+    type: object
+  entities.LessonResp:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  entities.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  entities.LoginResp:
+    properties:
+      email:
+        type: string
+      token:
+        type: string
+    type: object
+  entities.RefreshReq:
+    properties:
+      email:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  entities.RefreshResp:
+    properties:
+      email:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token:
+        type: string
+    type: object
+  entities.RegistrationReq:
+    properties:
+      cource:
+        type: integer
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      gpa:
+        type: number
+      name:
+        type: string
+      password:
+        type: string
+      student_card:
+        type: string
+      username:
+        type: string
+    type: object
+  entities.RegistrationResp:
+    properties:
+      email:
+        type: string
+    type: object
+  entities.SignupCourseReq:
+    properties:
+      course_name:
+        type: string
+      email:
+        type: string
+    type: object
+  entities.SignupCourseResp:
+    properties:
+      course_name:
+        type: string
+    type: object
+  entities.UserChangePassReq:
+    properties:
+      email:
+        type: string
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  entities.UserChangePassResp:
+    properties:
+      email:
+        type: string
+    type: object
+  entities.UserProfile:
+    properties:
+      user:
+        properties:
+          cource:
+            type: integer
+          date_of_birth:
+            type: string
+          email:
+            type: string
+          gpa:
+            type: number
+          name:
+            type: string
+          student_card:
+            type: string
+          username:
+            type: string
+        type: object
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: email и пароль
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.LoginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Войти в систему
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: JWT refresh
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.RefreshReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.RefreshResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Овновить JWT токен
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: данные о пользователе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.RegistrationReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.RegistrationResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Зарегестрировать пользователя
+      tags:
+      - auth
+  /course/comment:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные о курсе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CourceCommentGet'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.CommentResp'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить комментарии к курсу
+      tags:
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Комментарий к курсу
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CourceCommentReq'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.CommentResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Отправить комментарий к курсу
+      tags:
+      - cources
+  /course/dashboard:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Информация о курсе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CourseReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Course'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить главную страницу курса
+      tags:
+      - cources
+  /course/lesson:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Информация об уроке
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.LessonReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.LessonResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить урок курса
+      tags:
+      - cources
+  /course/lesson/comment:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные о уроке
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.LessonCommentGet'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.CommentResp'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить комментарии к уроку
+      tags:
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Комментарий к уроку
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.LessonCommentReq'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.CommentResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Отправить комментарий к уроку
+      tags:
+      - cources
+  /course/lesson/homework:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные о домашней работе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.HomeworkReq'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.HomeworkResp'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить домашнюю работу
+      tags:
+      - cources
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Файл для загрузки ??? хз как
+        in: formData
+        name: file
+        required: true
+        type: file
+      - in: formData
+        name: course_name
+        type: string
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: lesson_name
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.HomeworkResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Отправить домашнюю работу
+      tags:
+      - cources
+  /course/lesson/sign_up:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Регистрация на курс
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.SignupCourseReq'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.SignupCourseResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Заерегистрироваться на курс
+      tags:
+      - cources
+  /course/lessons:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Информация о курсе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.CourseReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.LessonResp'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить все уроки курса
+      tags:
+      - cources
+  /courses:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Course'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить все курсы
+      tags:
+      - cources
+  /user/change_pass:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Изменения пароля
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UserChangePassReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserChangePassResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Изменить пароль пользователя
+      tags:
+      - users
+  /user/courses:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Course'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить курсы на которые записан пользователь
+      tags:
+      - users
+  /user/dashboard:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.DashboardResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить главную страницу
+      tags:
+      - dashboard
+  /user/edit:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Изменения профиля
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UserProfile'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.UserProfile'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Изменить профиль пользователя
+      tags:
+      - users
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserProfile'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entities.ErrorResponse'
+      summary: Получить профиль пользователя
+      tags:
+      - users
+swagger: "2.0"
