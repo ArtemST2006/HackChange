@@ -23,6 +23,7 @@ CREATE TABLE courses (
 CREATE TABLE lessons (
     id SERIAL PRIMARY KEY,
     course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    lesson_name TEXT,
     description TEXT,
     video_url TEXT,
     text TEXT,

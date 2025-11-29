@@ -4,10 +4,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/ArtemST2006/HackChange/internal/repository"
 	"github.com/go-chi/jwtauth/v5"
 	"golang.org/x/crypto/bcrypt"
-
-	"github.com/ArtemST2006/HackChange/internal/repository"
 )
 
 type AuthService struct {

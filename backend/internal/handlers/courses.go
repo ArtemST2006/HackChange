@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
+
+	"github.com/ArtemST2006/HackChange/internal/schema"
 )
 
 // GetAllCourses godoc
@@ -27,8 +30,25 @@ func (h *Handler) GetAllCourses(w http.ResponseWriter, r *http.Request) {
 // @Failure      404    {object}	entities.ErrorResponse
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/dashboard [get]
-func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) { // art
+	request := schema.DashboardRequest{}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response, err := h.services.Courses.GetCourseDashboard(request)
+
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+	}
 }
 
 // PostCourseComment godoc
@@ -73,8 +93,25 @@ func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
 // @Failure      404    {object}	entities.ErrorResponse
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lessons [get]
-func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) { // art
+	request := schema.LessonsRequest{}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response, err := h.services.Courses.GetCourseLessons(request)
+
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+	}
 }
 
 // GetCourseLessons godoc
@@ -88,8 +125,25 @@ func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) {
 // @Failure      404    {object}	entities.ErrorResponse
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson [get]
-func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) { // art
+	request := schema.LessonReq{}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response, err := h.services.Courses.GetCourseLesson(request)
+
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+	}
 }
 
 // PostLessonComment godoc
@@ -135,8 +189,26 @@ func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Failure      404    {object}	entities.ErrorResponse
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/sign_up [post]
-func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
+	request := schema.SignupCourseReq{}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response, err := h.services.Courses.SignupCourse(request)
+
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+	}
 }
 
 // GetHomework godoc

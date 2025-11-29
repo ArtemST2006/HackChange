@@ -9,8 +9,25 @@ type ErrorResponse struct {
 	} `json:"error"`
 }
 
-type DashboardResponse struct {
-	Course Course `json:"course"`
+// Dachboard
+type DashboardRequest struct {
+	CourseName string `json:"course_name"` // добавь в свагер
+}
+
+type DashboardResponse struct { // поменял поля
+	Description string `json:"description"`
+	Name        string `json:"name"`
+	Professor   string `json:"professor"`
+	Type        string `json:"type"`
+}
+
+// Lessons arrey
+type LessonsRequest struct {
+	CourseName string `json:"course_name"` // добавь в свагер
+}
+
+type LessonsResponse struct { // добавь в свагер
+	Lessons []LessonResp `json:"lessons"`
 }
 
 type RegistrationReq struct {

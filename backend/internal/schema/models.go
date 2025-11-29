@@ -30,6 +30,7 @@ func (Course) TableName() string { return "courses" }
 type Lesson struct {
 	ID          uint   `gorm:"column:id;primaryKey;autoIncrement"`
 	CourseID    uint   `gorm:"column:course_id;not null"`
+	LessonName  string `gorm:"column:lesson_name;not null"`
 	Description string `gorm:"column:description;type:text"`
 	VideoURL    string `gorm:"column:video_url;type:text"`
 	Text        string `gorm:"column:text;type:text"`

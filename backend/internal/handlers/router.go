@@ -9,17 +9,16 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httprate"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Handler struct {
- services *service.Service
+	services *service.Service
 }
 
 func NewHandler(services *service.Service) *Handler {
- return &Handler{
-  services: services,
- }
+	return &Handler{
+		services: services,
+	}
 }
 
 func (h *Handler) InitRoutes() http.Handler {
@@ -29,16 +28,16 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(httprate.LimitByIP(100, 1*time.Minute)) // Rate limit middleware
 
 	r.Use(cors.Handler(cors.Options{
-	AllowedOrigins:   []string{"*"},
-	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
-	ExposedHeaders:   []string{"Link"},
-	AllowCredentials: true,
-	MaxAge:           300,
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
 	}))
 	// Хрен знает правльно ли я написал роуты, но вроде так должно работать (Это все андрей)
 	// Артем, проверь особенно get запросы(нужны ли они)
-	r.Get("/swagger/*", httpSwagger.Handler())
+	// r.Get("/swagger/*", httpSwagger.Handler())
 
 	r.Route("/auth", func(auth chi.Router) {
 		auth.Post("/register", h.Register)
@@ -57,13 +56,13 @@ func (h *Handler) InitRoutes() http.Handler {
 
 	r.Get("/dashboard", h.GetDashboard)
 	r.Get("/courses", h.GetAllCourses)
-	
+
 	r.Route("/course", func(course chi.Router) {
 		h.authMiddleware(course)
-		course.Get("/dashboard", h.GetCourseDashboard)
-		course.Get("/lessons", h.GetCourseLessons)
-		course.Get("/lesson", h.GetCourseLesson)
-		course.Post("/lesson/signup", h.SignupCourse)
+		course.Get("/dashboard", h.GetCourseDashboard) // art
+		course.Get("/lessons", h.GetCourseLessons)     // art
+		course.Get("/lesson", h.GetCourseLesson)       // art
+		course.Post("/lesson/signup", h.SignupCourse)  // art
 		course.Get("/comment", h.GetCourseComment)
 		course.Post("/comment", h.PostCourseComment)
 	})
@@ -75,7 +74,6 @@ func (h *Handler) InitRoutes() http.Handler {
 		lesson.Get("/homework", h.GetHomework)
 		lesson.Post("/homework", h.PostHomework)
 	})
-	
 
 	return r
 }
