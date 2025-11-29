@@ -18,16 +18,15 @@ type AuthService struct {
 func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{
 		repo:      repo,
-		TokenAuth: jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil),// TODO поменять секрет
+		TokenAuth: jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil), // TODO поменять секрет
 	}
 }
 
 type TokenPair struct {
-    AccessToken  string `json:"access_token"`
-    RefreshToken string `json:"refresh_token"`
-    ExpiresIn    int    `json:"expires_in"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int    `json:"expires_in"`
 }
-
 
 func (s *AuthService) GenerateHashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) // австоматически генерирует соль
@@ -45,11 +44,11 @@ func (s *AuthService) GenerateJWTToken(userID uint) (string, string, error) {
 
 	_, token, err := s.TokenAuth.Encode(claims)
 	if err != nil {
-		return "", "" , err
+		return "", "", err
 	}
 
-	_ , refreshToken, err := s.TokenAuth.Encode(nil)
-	if err != nil{
+	_, refreshToken, err := s.TokenAuth.Encode(nil)
+	if err != nil {
 		return "", "", err
 	}
 
@@ -60,4 +59,4 @@ func (s *AuthService) TokenStruct() *jwtauth.JWTAuth {
 	return s.TokenAuth
 }
 
-func (s *AuthService) RefreshToken()
+// func (s *AuthService) RefreshToken()
