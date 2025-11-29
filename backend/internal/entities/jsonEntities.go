@@ -1,4 +1,5 @@
 package entities
+
 // хз че там с токенами
 
 type ErrorResponse struct {

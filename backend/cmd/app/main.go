@@ -9,10 +9,10 @@ import (
 	"syscall"
 
 	"github.com/ArtemST2006/HackChange/internal/config"
-	"github.com/ArtemST2006/HackChange/internal/handler"
+	"github.com/ArtemST2006/HackChange/internal/handlers"
 	"github.com/ArtemST2006/HackChange/internal/repository"
 	"github.com/ArtemST2006/HackChange/internal/server"
-	"github.com/ArtemST2006/HackChange/internal/service"
+	service "github.com/ArtemST2006/HackChange/internal/services"
 )
 
 func main() {
@@ -30,9 +30,11 @@ func main() {
 		panic(err)
 	}
 
+	
+
 	repository := repository.NewRepository(db) //инициализация репозитория
     service := service.NewService(repository) //инициализация сервисов
-	handler := handler.NewHandler(service) //инициализация хендлеров
+	handler := handlers.NewHandler(service) //инициализация хендлеров
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)

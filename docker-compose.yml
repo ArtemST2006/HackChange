@@ -37,6 +37,18 @@ services:
     volumes:
       - ./uploads:/app/uploads
 
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
   # frontend:
   #   build:
   #     context: ./frontend

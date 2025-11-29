@@ -15,7 +15,7 @@ import (
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /auth/register [post]
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
-
+	panic("implement me")
 }
 
 // Login godoc
