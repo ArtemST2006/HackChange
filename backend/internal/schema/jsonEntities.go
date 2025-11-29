@@ -188,3 +188,44 @@ type HomeworkUploadFile struct {
 	Name string
 	Data []byte
 }
+
+// MainDashboardResponse — ответ для GET /dashboard (главная страница студента)
+type MainDashboardResponse struct {
+	User             DashboardUser     `json:"user"`
+	Stats            DashboardStats    `json:"stats"`
+	ContinueLearning *CourseLesson     `json:"continue_learning,omitempty"`
+	TopCourses       []CoursePreview   `json:"top_courses"`
+	Categories       []CategoryPreview `json:"categories"`
+}
+
+type DashboardUser struct {
+	Name string `json:"name"`
+}
+
+type DashboardStats struct {
+	ActiveCourses      int `json:"active_courses"`
+	PendingAssignments int `json:"pending_assignments"`
+	OverallProgress    int `json:"overall_progress"`
+	StreakDays         int `json:"streak_days"`
+}
+
+type CourseLesson struct {
+	CourseID   uint   `json:"course_id"`
+	CourseName string `json:"course_name"`
+	LessonID   uint   `json:"lesson_id"`
+	LessonName string `json:"lesson_name"`
+	Progress   int    `json:"progress"`
+}
+
+type CoursePreview struct {
+	CourseID    uint   `json:"course_id"`
+	CourseName  string `json:"course_name"`
+	Professor   string `json:"professor"`
+	Description string `json:"description"`
+}
+
+type CategoryPreview struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	CourseCount int    `json:"course_count"`
+}

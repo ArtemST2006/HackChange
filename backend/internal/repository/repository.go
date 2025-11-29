@@ -51,12 +51,17 @@ type Comment interface {
 	LessonExists(lessonID uint) (bool, error)
 }
 
+type Dashboard interface {
+	GetMainDashboardData(userID uint) (*schema.MainDashboardResponse, error)
+}
+
 type Repository struct {
 	Authorization
 	Minio
 	User
 	Courses
 	Comment
+	Dashboard
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -67,5 +72,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		User:          postgres.NewUserRepo(db),
 		Comment:       postgres.NewCommentPostgres(db),
 		Minio:         miniorep.NewMinioClient(),
+		Dashboard:     postgres.NewDashboardRepository(db),
 	}
 }

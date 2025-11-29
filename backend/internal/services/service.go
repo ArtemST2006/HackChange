@@ -32,22 +32,25 @@ type User interface {
 	UserChangePass(uint, *schema.UserChangePassReq) (*uint, error)
 }
 
+type CommentService = impl.CommentService
+type DashboardService = impl.DashboardService
+
 type Service struct {
 	Authorization
 	Courses
 	User
-	CommentService CommentService
-	MinioService   *impl.HomeworkService
+	CommentService   CommentService
+	MinioService     *impl.HomeworkService
+	DashboardService DashboardService
 }
-
-type CommentService = impl.CommentService
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		Authorization:  impl.NewAuthService(repo.Authorization),
-		Courses:        impl.NewCoursesService(repo.Courses),
-		User:           impl.NewUserService(repo.User),
-		CommentService: impl.NewCommentService(repo.Comment),
-		MinioService:   impl.NewHomeworkService(repo.Minio.(*miniorep.MinioRepository)),
+		Authorization:    impl.NewAuthService(repo.Authorization),
+		Courses:          impl.NewCoursesService(repo.Courses),
+		User:             impl.NewUserService(repo.User),
+		CommentService:   impl.NewCommentService(repo.Comment),
+		MinioService:     impl.NewHomeworkService(repo.Minio.(*miniorep.MinioRepository)),
+		DashboardService: impl.NewDashboardService(repo.Dashboard),
 	}
 }
