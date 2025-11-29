@@ -45,7 +45,7 @@ func (s *AuthService) CreateUser(user schema.Student) (uint, error){
 		return 0, fmt.Errorf("invalid credentials")
 	}
 	if user.HashPassword == "" || len(user.HashPassword) < 8{
-		s.log.Error("password too short or empty")
+		s.log.Error("password too short or empty", "password", user.HashPassword, "email", user.Email)
 		return 0, fmt.Errorf("invalid credentials")
 	}
 	user.HashPassword, _ = s.GenerateHashPassword(user.HashPassword)

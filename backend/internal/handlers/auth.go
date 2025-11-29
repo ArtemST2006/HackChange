@@ -25,14 +25,20 @@ type RefreshReq struct{
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /auth/register [post]
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
-	var input schema.Student
+	var input schema.RegistrationReq
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	id , err := h.services.Authorization.CreateUser(input)
+	var user schema.Student
+	user.Email = input.Email
+	user.HashPassword = input.HashedPassword
+	user.UserName = input.Username
+	
+
+	id , err := h.services.Authorization.CreateUser(user)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -56,14 +62,14 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /auth/login [post]
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
-	var input schema.Student
+	var input schema.LoginReq
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	token, in, err := h.services.GetUser(input.Email, input.HashPassword) 
+	token, in, err := h.services.GetUser(input.Email, input.HashedPassword) 
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -100,14 +106,13 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /auth/refresh [post]
 func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	var input RefreshReq
-
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	cookie, err := r.Cookie("refresh_token")
+	if err != nil {
+		http.Error(w, "refresh token not found", http.StatusBadRequest)
 		return
 	}
 
-	token,  err := h.services.Authorization.RefreshToken(input.RefreshToken)
+	token,  err := h.services.Authorization.RefreshToken(cookie.Value)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -122,7 +127,6 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 	})
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"email": input.Email,
 		"token": token.AccessToken,
 	})
 }
@@ -146,6 +150,10 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = h.services.Authorization.Logout(cookie.Value)
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
