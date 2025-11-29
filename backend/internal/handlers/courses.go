@@ -40,8 +40,8 @@ func (h *Handler) successResponse(w http.ResponseWriter, statusCode int, data in
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Success		 200 	{array}		entities.Course
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 200 	{array}		schema.Course
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /courses [get]
 func (h *Handler) GetAllCourses(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
@@ -52,11 +52,9 @@ func (h *Handler) GetAllCourses(w http.ResponseWriter, r *http.Request) {
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.CourseReq	true	"Информация о курсе"
-// @Success		 200 	{object}	entities.Course
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.DashboardRequest	true	"Информация о курсе"
+// @Success		 200 	{object}	schema.DashboardResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/dashboard [get]
 func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) { // art
 	request := schema.DashboardRequest{}
@@ -168,11 +166,9 @@ func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.CourseReq	true	"Информация о курсе"
-// @Success		 200 	{array}		entities.LessonResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.LessonsRequest	true	"Информация о курсе"
+// @Success		 200 	{array}		schema.LessonsResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/lessons [get]
 func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) { // art
 	request := schema.LessonsRequest{}
@@ -200,11 +196,9 @@ func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) { // 
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.LessonReq	true	"Информация об уроке"
-// @Success		 200 	{object}	entities.LessonResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.LessonReq	true	"Информация об уроке"
+// @Success		 200 	{object}	schema.LessonResp
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/lesson [get]
 func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) { // art
 	request := schema.LessonReq{}
@@ -316,12 +310,10 @@ func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.SignupCourseReq	true	"Регистрация на курс"
+// @Param        body	body		schema.SignupCourseReq	true	"Регистрация на курс"
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 201 	{object}	entities.SignupCourseResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 201 	{object}	schema.SignupCourseResp
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/lesson/sign_up [post]
 func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
 	request := schema.SignupCourseReq{}
@@ -350,12 +342,11 @@ func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.HomeworkReq	true	"Данные о домашней работе"
+// @Param        body	body		schema.HomeworkReq	true	"Данные о домашней работе"
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 200 	{array}		entities.HomeworkResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 200 	{array}		schema.HomeworkResp
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/lesson/homework [get]
 func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
 	var req schema.HomeworkReq
@@ -395,12 +386,11 @@ func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param		 file    formData  	file      				true   "Файл для загрузки ??? хз как"
-// @Param 		 HW_data formData 	entities.HomeworkPost	true   "Данные о домашней работе"
+// @Param 		 HW_data formData 	schema.HomeworkPost	true   "Данные о домашней работе"
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 201 	{object}	entities.HomeworkResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 201 	{object}	schema.HomeworkResp
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/lesson/homework [post]
 func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
 	// Parse multipart form

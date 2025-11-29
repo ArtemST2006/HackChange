@@ -19,10 +19,9 @@ type RefreshReq struct{
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.RegistrationReq	true	"данные о пользователе"
-// @Success		 201 	{object}	entities.RegistrationResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.RegistrationReq	true	"данные о пользователе"
+// @Success		 201 	{object}	map[string]interface{} "id: идентификатор пользователя"
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /auth/register [post]
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var input schema.RegistrationReq
@@ -55,11 +54,10 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.LoginReq	true	"email и пароль"
-// @Success		 200 	{object}	entities.LoginResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.LoginReq	true	"email и пароль"
+// @Success		 200 	{object}	schema.LoginResp
+// @Failure      404    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /auth/login [post]
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var input schema.LoginReq
@@ -100,10 +98,8 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.RefreshReq	true	"JWT refresh"
-// @Success		 201 	{object}	entities.RefreshResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 201 	{object}	schema.RefreshResp
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /auth/refresh [post]
 func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("refresh_token")
@@ -137,9 +133,9 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Success		 200 	{object}	entities.LogoutResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 200 	{object}	map[string]interface{}
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /auth/logout [post]
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 

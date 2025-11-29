@@ -15,10 +15,8 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 200 	{object}	entities.UserProfile
-// @Failure      401    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 200 	{object}	schema.StudentProfile
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /user/profile [get]
 func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
@@ -56,11 +54,10 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        Authorization	header	string	true	"Bearer"
-// @Param        body	body		entities.UserProfile	true	"Изменения профиля"
-// @Success		 201 	{object}	entities.UserProfile
-// @Failure      401    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.StudentProfile	true	"Изменения профиля"
+// @Success		 200 	{object}	map[string]interface{} "id: идентификатор пользователя"
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /user/edit [put]
 func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
@@ -111,10 +108,8 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 200 	{array}		entities.Course
-// @Failure      401    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 200 	{array}		schema.CourseDB
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /user/courses [get]
 func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
@@ -152,12 +147,10 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        Authorization	header	string	true	"Bearer"
-// @Param        body	body		entities.UserChangePassReq	true	"Изменения пароля"
-// @Success		 200 	{object}	entities.UserChangePassResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      401    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        body	body		schema.UserChangePassReq	true	"Изменения пароля"
+// @Success		 200 	{object}	map[string]interface{} "id: идентификатор пользователя"
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /user/change_pass [put]
 func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
