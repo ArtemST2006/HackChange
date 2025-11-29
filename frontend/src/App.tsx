@@ -6,6 +6,7 @@ import { Register } from './pages/Register/Register';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Courses } from './pages/Courses/Courses';
 import { CourseDetail } from './pages/CourseDetail/CourseDetail';
+import { Lesson } from './pages/Lesson/Lesson';
 import { Homework } from './pages/Homework/Homework';
 import { Profile } from './pages/Profile/Profile';
 import './assets/styles/global.css';
@@ -78,6 +79,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <CourseDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/courses/:courseId/lessons/:lessonId"
+        element={
+          <ProtectedRoute>
+            <Lesson />
           </ProtectedRoute>
         }
       />

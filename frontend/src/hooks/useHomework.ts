@@ -1,6 +1,6 @@
 import { useApi } from './useApi';
-import { homeworkService } from '../services/api';
-import { Homework, HomeworkSubmission } from '../types';
+import { homeworkService } from '../services/api/homework.service';
+import type { Homework, HomeworkSubmission } from '../types';
 
 export function useMyHomeworks() {
   return useApi<Homework[]>(

@@ -225,3 +225,105 @@ export interface UserSettings {
   showOnlineStatus: boolean;
   showGrades: boolean;
 }
+
+// Quiz/Test Types
+export interface QuizQuestion {
+  id: string;
+  type: 'single-choice' | 'multiple-choice' | 'true-false' | 'code' | 'text';
+  question: string;
+  code?: string; // Optional code snippet to display
+  options?: QuizOption[]; // For choice questions
+  correctAnswer: string | string[]; // For auto-grading
+  explanation?: string; // Shown after answering
+  points: number;
+}
+
+export interface QuizOption {
+  id: string;
+  text: string;
+  isCorrect?: boolean; // Used for checking answers
+}
+
+export interface Quiz {
+  id: string;
+  lessonId: string;
+  title: string;
+  description: string;
+  questions: QuizQuestion[];
+  timeLimit?: number; // in seconds
+  passingScore: number; // percentage
+  maxAttempts: number;
+  shuffleQuestions: boolean;
+  showCorrectAnswers: boolean;
+}
+
+export interface QuizAttempt {
+  id: string;
+  quizId: string;
+  userId: string;
+  answers: QuizAnswer[];
+  score: number;
+  percentage: number;
+  passed: boolean;
+  startedAt: string;
+  completedAt?: string;
+  timeSpent: number; // in seconds
+  attemptNumber: number;
+}
+
+export interface QuizAnswer {
+  questionId: string;
+  answer: string | string[];
+  isCorrect: boolean;
+  pointsEarned: number;
+}
+
+// Code Exercise Types
+export interface CodeExercise {
+  id: string;
+  lessonId: string;
+  title: string;
+  description: string;
+  instructions: string;
+  starterCode: string;
+  language: 'python' | 'javascript' | 'java' | 'cpp';
+  testCases: TestCase[];
+  hints?: string[];
+  difficulty: 'easy' | 'medium' | 'hard';
+}
+
+export interface TestCase {
+  id: string;
+  input: string;
+  expectedOutput: string;
+  isHidden: boolean; // Hidden test cases are not shown to student
+  points: number;
+}
+
+export interface CodeSubmission {
+  id: string;
+  exerciseId: string;
+  userId: string;
+  code: string;
+  result: CodeExecutionResult;
+  submittedAt: string;
+}
+
+export interface CodeExecutionResult {
+  success: boolean;
+  passedTests: number;
+  totalTests: number;
+  testResults: TestResult[];
+  executionTime: number; // in ms
+  error?: string;
+  score: number;
+}
+
+export interface TestResult {
+  testCaseId: string;
+  passed: boolean;
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  error?: string;
+}

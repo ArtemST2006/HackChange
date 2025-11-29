@@ -1,6 +1,7 @@
 import { useApi } from './useApi';
-import { coursesService, CoursesFilters } from '../services/api';
-import { Course, Module, Lesson } from '../types';
+import { coursesService } from '../services/api/courses.service';
+import type { CoursesFilters } from '../services/api/courses.service';
+import type { Course, Module, Lesson } from '../types';
 
 export function useCourses(filters?: CoursesFilters) {
   return useApi<Course[]>(

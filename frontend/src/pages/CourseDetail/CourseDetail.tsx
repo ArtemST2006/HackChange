@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Header, Card, Button } from '../../components/shared';
+import { Header, Card } from '../../components/shared';
 import { mockCourses, mockModules } from '../../utils/mockData';
 import './CourseDetail.css';
 
@@ -200,7 +200,7 @@ export const CourseDetail: React.FC = () => {
 
                   {expandedModules.has(module.id) && (
                     <div className="lessons-list">
-                      {module.lessons.map((lesson, lessonIndex) => (
+                      {module.lessons.map((lesson) => (
                         <div
                           key={lesson.id}
                           className={`lesson-item ${lesson.status}`}

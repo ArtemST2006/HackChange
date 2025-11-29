@@ -1,5 +1,6 @@
-import { apiClient, ApiResponse } from './client';
-import { Course, Module, Lesson } from '../../types';
+import { apiClient } from './client';
+import type { ApiResponse } from './client';
+import type { Course, Module, Lesson } from '../../types';
 
 export interface CoursesFilters {
   category?: string;

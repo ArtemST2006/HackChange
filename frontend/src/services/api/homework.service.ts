@@ -1,5 +1,6 @@
-import { apiClient, ApiResponse } from './client';
-import { Homework, HomeworkSubmission } from '../../types';
+import { apiClient } from './client';
+import type { ApiResponse } from './client';
+import type { Homework, HomeworkSubmission } from '../../types';
 
 export const homeworkService = {
   async getMyHomeworks(): Promise<Homework[]> {

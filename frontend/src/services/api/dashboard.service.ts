@@ -1,5 +1,6 @@
-import { apiClient, ApiResponse } from './client';
-import { DashboardData, UserStatistics } from '../../types';
+import { apiClient } from './client';
+import type { ApiResponse } from './client';
+import type { DashboardData, UserStatistics } from '../../types';
 
 export const dashboardService = {
   async getDashboardData(): Promise<DashboardData> {
