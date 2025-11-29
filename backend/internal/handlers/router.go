@@ -29,7 +29,7 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(httprate.LimitByIP(100, 1*time.Minute)) // Rate limit middleware
 
 	r.Use(cors.Handler(cors.Options{
-	AllowedOrigins:   []string{"http://localhost:3000", "http://localhost:5173"},
+	AllowedOrigins:   []string{"*"},
 	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 	ExposedHeaders:   []string{"Link"},

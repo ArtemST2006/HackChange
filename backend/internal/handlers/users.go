@@ -30,7 +30,7 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 // @Failure      401    {object}	entities.ErrorResponse
 // @Failure      404    {object}	entities.ErrorResponse
 // @Failure      500    {object}	entities.ErrorResponse
-// @Router       /user/edit [post]
+// @Router       /user/edit [put]
 func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }	
@@ -62,7 +62,7 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 // @Failure      401    {object}	entities.ErrorResponse
 // @Failure      404    {object}	entities.ErrorResponse
 // @Failure      500    {object}	entities.ErrorResponse
-// @Router       /user/change_pass [post]
+// @Router       /user/change_pass [put]
 func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
 }

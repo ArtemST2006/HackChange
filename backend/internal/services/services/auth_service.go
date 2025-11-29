@@ -1,6 +1,7 @@
 package services
 
 import (
+	"os"
 	"time"
 
 	"github.com/go-chi/jwtauth/v5"
@@ -17,8 +18,14 @@ type AuthService struct {
 func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{
 		repo:      repo,
-		TokenAuth: jwtauth.New("HS256", []byte("secret"), nil),// TODO поменять секрет
+		TokenAuth: jwtauth.New("HS256", []byte(os.Getenv("JWT_SECRET")), nil),// TODO поменять секрет
 	}
+}
+
+type TokenPair struct {
+    AccessToken  string `json:"access_token"`
+    RefreshToken string `json:"refresh_token"`
+    ExpiresIn    int    `json:"expires_in"`
 }
 
 
@@ -30,20 +37,27 @@ func (s *AuthService) GenerateHashPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
-func (s *AuthService) GenerateJWTToken(userID uint) (string, error) {
+func (s *AuthService) GenerateJWTToken(userID uint) (string, string, error) {
 	claims := map[string]any{
 		"user_id": userID,
-		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+		"exp":     time.Now().Add(15 * time.Minute).Unix(),
 	}
 
 	_, token, err := s.TokenAuth.Encode(claims)
 	if err != nil {
-		return "", err
+		return "", "" , err
 	}
 
-	return token, nil
+	_ , refreshToken, err := s.TokenAuth.Encode(nil)
+	if err != nil{
+		return "", "", err
+	}
+
+	return token, refreshToken, err
 }
 
 func (s *AuthService) TokenStruct() *jwtauth.JWTAuth {
 	return s.TokenAuth
 }
+
+func (s *AuthService) RefreshToken()
