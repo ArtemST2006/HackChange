@@ -1,10 +1,11 @@
-package repository
+package postgres
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/schema"
 
-	"gorm.io/gorm"
 	"errors"
+
+	"gorm.io/gorm"
 )
 
 type UserRepo struct {
@@ -12,7 +13,7 @@ type UserRepo struct {
 }
 
 func NewUserRepo(db *gorm.DB) *UserRepo {
-	return &UserRepo{ db: db }
+	return &UserRepo{db: db}
 }
 
 func (r *UserRepo) GetUser(userID uint) (*schema.Student, *schema.StudentData, error) {
@@ -67,13 +68,13 @@ func (r *UserRepo) GetUserCourses(userID uint) (*[]schema.CourseDB, error) {
 			INNER JOIN professor p ON c.professor_id = p.id
 			WHERE uc.user_id = ?
 		`
-	
+
 	result := r.db.Raw(query, userID).Scan(&courses)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	
-	return &courses, nil	
+
+	return &courses, nil
 }
 
 func (r *UserRepo) UserChangePass(userID uint, passwords *schema.UserChangePassReq) error {

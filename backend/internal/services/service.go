@@ -2,23 +2,19 @@ package services
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/repository"
-	"github.com/ArtemST2006/HackChange/internal/schema"
-
-	miniorep "github.com/ArtemST2006/HackChange/internal/repository/miniorep"
+	"github.com/ArtemST2006/HackChange/internal/repository/miniorep"
 	"github.com/ArtemST2006/HackChange/internal/schema"
 	"github.com/ArtemST2006/HackChange/internal/services/impl"
-	"github.com/ArtemST2006/HackChange/internal/services/services"
 	"github.com/go-chi/jwtauth/v5"
 )
 
 type Authorization interface {
 	TokenStruct() *jwtauth.JWTAuth
-	GenerateJWTRToken(uint) (*services.TokenPair, error)
-	TokenStruct() *jwtauth.JWTAuth
+	GenerateJWTRToken(uint) (*impl.TokenPair, error)
 	GenerateHashPassword(string) (string, error)
-	RefreshToken(string) (*services.TokenPair, error)
+	RefreshToken(string) (*impl.TokenPair, error)
 	CreateUser(schema.Student) (uint, error)
-	GetUser(string, string) (*services.TokenPair, *schema.Student, error)
+	GetUser(string, string) (*impl.TokenPair, *schema.Student, error)
 	Logout(string) error
 }
 
@@ -41,7 +37,7 @@ type Service struct {
 	Courses
 	User
 	CommentService CommentService
-	MinioService   *services.HomeworkService
+	MinioService   *impl.HomeworkService
 }
 
 type CommentService = impl.CommentService

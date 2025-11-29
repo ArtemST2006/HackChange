@@ -2,11 +2,38 @@ package handlers
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 
 	"github.com/ArtemST2006/HackChange/internal/schema"
+	"github.com/google/uuid"
 )
+
+func (h *Handler) decodeJSON(r *http.Request, v interface{}) error {
+	decoder := json.NewDecoder(r.Body)
+	return decoder.Decode(v)
+}
+
+func (h *Handler) errorResponse(w http.ResponseWriter, statusCode int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(schema.ErrorResponse{
+		Error: struct {
+			Code    int    `json:"code"`
+			Message string `json:"message"`
+		}{
+			Code:    statusCode,
+			Message: message,
+		},
+	})
+}
+
+func (h *Handler) successResponse(w http.ResponseWriter, statusCode int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(data)
+}
 
 // GetAllCourses godoc
 // @Summary      Получить все курсы
@@ -331,7 +358,35 @@ func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/homework [get]
 func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	var req schema.HomeworkReq
+	if err := h.decodeJSON(r, &req); err != nil {
+		h.errorResponse(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+	homeworkID := r.URL.Query().Get("homework_id")
+	var files []schema.HomeworkFile
+	if homeworkID != "" {
+		urls, err := h.services.MinioService.GetHomeworkURL(r.Context(), req.LessonName, homeworkID, []string{"homework.zip"}, int64(15*60))
+		if err == nil && urls != nil {
+
+			for name, u := range urls {
+				files = append(files, schema.HomeworkFile{Name: name, URL: u})
+			}
+		}
+	}
+
+	resp := []schema.HomeworkResp{
+		{
+			CourseName:  req.CourseName,
+			LessonName:  req.LessonName,
+			Professor:   "Professor Name",
+			Description: "Homework description",
+			Mark:        0,
+			Files:       files,
+		},
+	}
+
+	h.successResponse(w, http.StatusOK, resp)
 }
 
 // PostHomework godoc
@@ -348,7 +403,84 @@ func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
 // @Failure      500    {object}	entities.ErrorResponse
 // @Router       /course/lesson/homework [post]
 func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	// Parse multipart form
+	err := r.ParseMultipartForm(100 << 20) // 32MB max memory
+	if err != nil {
+		h.errorResponse(w, http.StatusBadRequest, "Failed to parse form")
+		return
+	}
+
+	// Support multiple files with form key "file"
+	if err := r.ParseMultipartForm(100 << 20); err != nil {
+		h.errorResponse(w, http.StatusBadRequest, "Failed to parse multipart form")
+		return
+	}
+
+	uploadedFiles := []schema.HomeworkUploadFile{}
+	filesHeaders := r.MultipartForm.File["file"]
+	if len(filesHeaders) == 0 {
+		h.errorResponse(w, http.StatusBadRequest, "No files uploaded")
+		return
+	}
+
+	for _, fh := range filesHeaders {
+		f, err := fh.Open()
+		if err != nil {
+			h.errorResponse(w, http.StatusInternalServerError, "Failed to open uploaded file")
+			return
+		}
+		data, err := io.ReadAll(f)
+		f.Close()
+		if err != nil {
+			h.errorResponse(w, http.StatusInternalServerError, "Failed to read uploaded file")
+			return
+		}
+		uploadedFiles = append(uploadedFiles, schema.HomeworkUploadFile{Name: fh.Filename, Data: data})
+	}
+
+	// Get homework data from form
+	hwDataStr := r.FormValue("HW_data")
+	if hwDataStr == "" {
+		h.errorResponse(w, http.StatusBadRequest, "No homework data provided")
+		return
+	}
+
+	var hwData schema.HomeworkPost
+	if err := json.Unmarshal([]byte(hwDataStr), &hwData); err != nil {
+		h.errorResponse(w, http.StatusBadRequest, "Invalid homework data")
+		return
+	}
+
+	homeworkID := uuid.New().String()
+
+	ctx := r.Context()
+	err = h.services.MinioService.UploadHomework(ctx, hwData.LessonName, homeworkID, uploadedFiles)
+	if err != nil {
+		h.errorResponse(w, http.StatusInternalServerError, "Failed to upload file to storage")
+		return
+	}
+	fileNames := make([]string, 0, len(uploadedFiles))
+	for _, f := range uploadedFiles {
+		fileNames = append(fileNames, f.Name)
+	}
+	urls, _ := h.services.MinioService.GetHomeworkURL(ctx, hwData.LessonName, homeworkID, fileNames, int64(15*60))
+
+	filesResp := []schema.HomeworkFile{}
+	for _, f := range uploadedFiles {
+		filesResp = append(filesResp, schema.HomeworkFile{Name: f.Name, URL: urls[f.Name]})
+	}
+
+	resp := schema.HomeworkResp{
+		CourseName:  hwData.CourseName,
+		LessonName:  hwData.LessonName,
+		Professor:   "Professor Name",
+		Description: "Homework uploaded successfully",
+		Mark:        0,
+		HomeworkID:  homeworkID,
+		Files:       filesResp,
+	}
+
+	h.successResponse(w, http.StatusCreated, resp)
 }
 
 // ---------------------- Вспомогательные методы ----------------------

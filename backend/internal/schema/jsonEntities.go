@@ -69,15 +69,15 @@ type RefreshResp struct {
 
 type StudentProfile struct {
 	Student struct {
-		Id 			uint 	`json:"id"`
-		Username    string  `json:"username"`
-		Email       string  `json:"email"`
+		Id       uint   `json:"id"`
+		Username string `json:"username"`
+		Email    string `json:"email"`
 	} `json:"student"`
 	StudentData struct {
-		Name        string  `json:"name"`
-		StudentCard string  `json:"student_card"`
+		Name        string   `json:"name"`
+		StudentCard string   `json:"student_card"`
 		DateOfBirth *string  `json:"date_of_birth"`
-		Course      string  `json:"cource"`
+		Course      string   `json:"cource"`
 		GPA         *float32 `json:"gpa"`
 	} `json:"student_data"`
 }
@@ -162,22 +162,21 @@ type HomeworkReq struct {
 }
 
 type HomeworkResp struct {
-	CourseName  string     `json:"course_name"`
-	LessonName  string     `json:"lesson_name"`
-	Professor   string     `json:"professor"`
-	Description string     `json:"description"`
-	Mark        int        `json:"mark"`
-	HomeworkID  string     `json:"homework_id,omitempty"`
+	CourseName  string         `json:"course_name"`
+	LessonName  string         `json:"lesson_name"`
+	Professor   string         `json:"professor"`
+	Description string         `json:"description"`
+	Mark        int            `json:"mark"`
+	HomeworkID  string         `json:"homework_id,omitempty"`
 	Files       []HomeworkFile `json:"files"`
 }
 
 type HomeworkPost struct {
-	CourseName string     `json:"course_name"`
-	LessonName string     `json:"lesson_name"`
-	Email      string     `json:"email"`
+	CourseName string         `json:"course_name"`
+	LessonName string         `json:"lesson_name"`
+	Email      string         `json:"email"`
 	Files      []HomeworkFile `json:"files"`
 	HomeworkID string         `json:"homework_id,omitempty"`
-
 }
 
 type HomeworkFile struct {

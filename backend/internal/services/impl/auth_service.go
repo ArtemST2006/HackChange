@@ -10,13 +10,11 @@ import (
 	"time"
 
 	"github.com/ArtemST2006/HackChange/internal/repository"
+	"github.com/ArtemST2006/HackChange/internal/schema"
+	"github.com/asaskevich/govalidator"
 	"github.com/go-chi/jwtauth/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-
-	"github.com/ArtemST2006/HackChange/internal/repository"
-	"github.com/ArtemST2006/HackChange/internal/schema"
-	"github.com/asaskevich/govalidator"
 )
 
 type AuthService struct {

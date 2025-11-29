@@ -1,4 +1,4 @@
-package repository
+package postgres
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/schema"

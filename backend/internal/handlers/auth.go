@@ -8,9 +8,8 @@ import (
 	"github.com/ArtemST2006/HackChange/internal/schema"
 )
 
-
-type RefreshReq struct{
-	Email string        `json:"email"`
+type RefreshReq struct {
+	Email        string `json:"email"`
 	RefreshToken string `json:"refresh_token"`
 }
 
@@ -27,13 +26,13 @@ type RefreshReq struct{
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var input schema.Student
 
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	id , err := h.services.Authorization.CreateUser(input)
-	if err != nil{
+	id, err := h.services.Authorization.CreateUser(input)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -58,27 +57,27 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var input schema.Student
 
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	token, in, err := h.services.GetUser(input.Email, input.HashPassword) 
-	if err != nil{
+	token, in, err := h.services.Authorization.GetUser(input.Email, input.HashPassword)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if in.ID == 0{
+	if in.ID == 0 {
 		http.Error(w, "user not found", http.StatusNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	http.SetCookie(w, &http.Cookie{
-		Name: "refresh_token",
-		Value: token.RefreshToken,
-		Path: "/",
-		Expires: time.Now().Add(7 * 24 * time.Hour),
+		Name:     "refresh_token",
+		Value:    token.RefreshToken,
+		Path:     "/",
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
 		HttpOnly: true,
 		Secure:   true,
 	})
@@ -87,7 +86,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		"token": token.AccessToken,
 	})
 }
-
 
 // RefreshToken godoc
 // @Summary      Овновить JWT токен
@@ -102,22 +100,22 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	var input RefreshReq
 
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	token,  err := h.services.Authorization.RefreshToken(input.RefreshToken)
-	if err != nil{
+	token, err := h.services.Authorization.RefreshToken(input.RefreshToken)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	http.SetCookie(w, &http.Cookie{
-		Name: "refresh_token",
-		Value: token.RefreshToken,
-		Path: "/",
-		Expires: time.Now().Add(7 * 24 * time.Hour),
+		Name:     "refresh_token",
+		Value:    token.RefreshToken,
+		Path:     "/",
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
 		HttpOnly: true,
 		Secure:   true,
 	})
@@ -126,7 +124,6 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		"token": token.AccessToken,
 	})
 }
-
 
 // Logout godoc
 // @Summary      Выйти из системы
@@ -139,7 +136,6 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 // @Router       /auth/logout [post]
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 
-
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
 		http.Error(w, "refresh token not found", http.StatusBadRequest)
@@ -151,5 +147,5 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "user logged out",
 	})
-	
+
 }
