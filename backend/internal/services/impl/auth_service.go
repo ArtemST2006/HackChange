@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"log/slog"
 	"os"
 	"time"
 
@@ -20,7 +19,6 @@ import (
 type AuthService struct {
 	repo      repository.Authorization
 	TokenAuth *jwtauth.JWTAuth
-	log       *slog.Logger // Структура с готовымы методами для работы с JWT
 }
 
 func NewAuthService(repo repository.Authorization) *AuthService {
@@ -38,26 +36,26 @@ type TokenPair struct {
 
 func (s *AuthService) CreateUser(user schema.Student) (uint, error) {
 	if !govalidator.IsEmail(user.Email) {
-		s.log.Error("invalid email format")
+		//s.log.Error("invalid email format")
 		return 0, fmt.Errorf("invalid credentials")
 	}
 	if user.HashPassword == "" || len(user.HashPassword) < 8 {
-		s.log.Error("password too short or empty")
+		//s.log.Error("password too short or empty")
 		return 0, fmt.Errorf("invalid credentials")
 	}
 	user.HashPassword, _ = s.GenerateHashPassword(user.HashPassword)
-	s.log.Info("creating user", "email", user.Email)
+	//s.log.Info("creating user", "email", user.Email)
 	return s.repo.CreateUser(user)
 }
 
 func (s *AuthService) GetUserA(email string, password string) (*TokenPair, *schema.Student, error) {
 	if !govalidator.IsEmail(email) {
-		s.log.Error("invalid email format")
+		//s.log.Error("invalid email format")
 		return nil, nil, fmt.Errorf("invalid credentials")
 	}
 	user, err := s.repo.GetUser(email)
 	if err != nil {
-		s.log.Error("user not found", "email", email)
+		//s.log.Error("user not found", "email", email)
 		return nil, nil, gorm.ErrRecordNotFound
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.HashPassword), []byte(password))
@@ -68,7 +66,7 @@ func (s *AuthService) GetUserA(email string, password string) (*TokenPair, *sche
 	if err != nil {
 		return nil, nil, err
 	}
-	s.log.Info("user authenticated", "email", email)
+	//s.log.Info("user authenticated", "email", email)
 	return tokenPair, user, nil
 }
 
@@ -85,7 +83,7 @@ func (s *AuthService) Logout(refreshToken string) error {
 		return err
 	}
 
-	s.log.Info("user logged out", "user_id", storedToken.UserID)
+	//s.log.Info("user logged out", "user_id", storedToken.UserID)
 	return nil
 }
 
@@ -144,10 +142,10 @@ func (s *AuthService) RefreshToken(oldRefreshToken string) (*TokenPair, error) {
 	storedToken, err := s.repo.GetValidRefreshToken(hashString)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			s.log.Info("invalid refresh token attempt")
+			//s.log.Info("invalid refresh token attempt")
 		} else {
 			err = s.repo.RevokeAllRefreshTokens(hashString)
-			s.log.Warn("maybe attack", "hash", hashString)
+			//s.log.Warn("maybe attack", "hash", hashString)
 		}
 		return nil, fmt.Errorf("invalid or expired refresh token")
 	}

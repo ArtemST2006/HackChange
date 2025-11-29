@@ -52,17 +52,16 @@ type Comment interface {
 }
 
 type Repository struct {
-	Authorization
-	Minio
-	User
-	Courses
-	Comment
+	Authorization Authorization
+	Minio         Minio
+	User          User
+	Courses       Courses
+	Comment       Comment
 }
 
 func NewRepository(db *gorm.DB) *Repository {
-	//TODO implement repositories
 	return &Repository{
-		Authorization: nil,
+		Authorization: postgres.NewAuthPostgres(db),
 		Courses:       postgres.NewCoursesRepository(db),
 		User:          postgres.NewUserRepo(db),
 		Comment:       postgres.NewCommentPostgres(db),
