@@ -1,4 +1,4 @@
-package services
+package impl
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/repository"

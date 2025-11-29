@@ -32,7 +32,7 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentIDraw, ok := claims["id"]
+	studentIDraw, ok := claims["user_id"]
 	var studentID uint = studentIDraw
 	if !ok {
 		var resp schema.ErrorResponse
@@ -123,7 +123,7 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"id": resp,
 	})
-}	
+}
 
 // UserCourses godoc
 // @Summary      Получить курсы на которые записан пользователь
@@ -173,7 +173,7 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(courses)	
+	json.NewEncoder(w).Encode(courses)
 }
 
 // UserChangePass godoc
@@ -240,4 +240,4 @@ func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"id": resp,
 	})
-}	
+}

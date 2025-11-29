@@ -1,5 +1,7 @@
 package schema
 
+import "time"
+
 type Student struct {
 	ID           uint   `gorm:"column:id;primaryKey;autoIncrement"`
 	UserName     string `gorm:"column:user_name;type:varchar(255);not null"`
@@ -47,19 +49,21 @@ type UserCourse struct {
 func (UserCourse) TableName() string { return "user_course" }
 
 type CommentCourse struct {
-	ID       uint   `gorm:"column:id;primaryKey;autoIncrement"`
-	UserID   uint   `gorm:"column:user_id;not null"`
-	CourseID uint   `gorm:"column:course_id;not null"`
-	Comment  string `gorm:"column:comment;type:text;not null"`
+	ID        uint      `gorm:"column:id;primaryKey;autoIncrement"`
+	UserID    uint      `gorm:"column:user_id;not null"`
+	CourseID  uint      `gorm:"column:course_id;not null"`
+	Comment   string    `gorm:"column:comment;type:text;not null"`
+	CreatedAt time.Time `gorm:"column:created_at;default:now()"`
 }
 
 func (CommentCourse) TableName() string { return "comments_courses" }
 
 type CommentLesson struct {
-	ID       uint   `gorm:"column:id;primaryKey;autoIncrement"`
-	UserID   uint   `gorm:"column:user_id;not null"`
-	LessonID uint   `gorm:"column:lesson_id;not null"`
-	Comment  string `gorm:"column:comment;type:text;not null"`
+	ID        uint      `gorm:"column:id;primaryKey;autoIncrement"`
+	UserID    uint      `gorm:"column:user_id;not null"`
+	LessonID  uint      `gorm:"column:lesson_id;not null"`
+	Comment   string    `gorm:"column:comment;type:text;not null"`
+	CreatedAt time.Time `gorm:"column:created_at;default:now()"`
 }
 
 func (CommentLesson) TableName() string { return "comments_lessons" }
@@ -102,3 +106,31 @@ type ProfessorData struct {
 }
 
 func (ProfessorData) TableName() string { return "professor_data" }
+
+// результат JOIN для комментариев курсов
+type CommentCourseWithUser struct {
+	ID        uint      `gorm:"column:id"`
+	UserID    uint      `gorm:"column:user_id"`
+	CourseID  uint      `gorm:"column:course_id"`
+	Comment   string    `gorm:"column:comment"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UserName  string    `gorm:"column:user_name"`
+}
+
+func (CommentCourseWithUser) TableName() string {
+	return "comments_courses"
+}
+
+// результат JOIN для комментариев уроков
+type CommentLessonWithUser struct {
+	ID        uint      `gorm:"column:id"`
+	UserID    uint      `gorm:"column:user_id"`
+	LessonID  uint      `gorm:"column:lesson_id"`
+	Comment   string    `gorm:"column:comment"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UserName  string    `gorm:"column:user_name"`
+}
+
+func (CommentLessonWithUser) TableName() string {
+	return "comments_lessons"
+}

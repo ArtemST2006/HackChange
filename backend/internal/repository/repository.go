@@ -1,11 +1,15 @@
+// internal/repository/repository.go
+
 package repository
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/repository/postgres"
+
 	"github.com/ArtemST2006/HackChange/internal/schema"
 	"gorm.io/gorm"
 )
 
+// === Интерфейсы ===
 type Authorization interface {
 	//TODO methods for authorization
 }
@@ -24,10 +28,20 @@ type User interface {
 	UserChangePass(userID uint, passwords *schema.UserChangePassReq) error
 }
 
+type Comment interface {
+	CreateCourseComment(comment *schema.CommentCourse) error
+	GetCourseCommentsByCourseID(courseID uint) ([]schema.CommentCourseWithUser, error)
+	CreateLessonComment(comment *schema.CommentLesson) error
+	GetLessonCommentsByLessonID(lessonID uint) ([]schema.CommentLessonWithUser, error)
+	CourseExists(courseID uint) (bool, error)
+	LessonExists(lessonID uint) (bool, error)
+}
+
 type Repository struct {
 	Authorization
 	User
 	Courses
+	Comment
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -36,5 +50,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Authorization: nil,
 		Courses:       postgres.NewCoursesRepository(db),
 		User:          NewUserRepo(db),
+		Comment:       NewCommentPostgres(db),
 	}
 }

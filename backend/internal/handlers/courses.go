@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/ArtemST2006/HackChange/internal/schema"
 )
@@ -52,19 +53,57 @@ func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) { /
 }
 
 // PostCourseComment godoc
-// @Summary      Отправить комментарий к курсу
+// @Summary      Добавить комментарий к курсу
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.CourceCommentReq		true	"Комментарий к курсу"
+// @Param        body	body		schema.CourseCommentRequest	true	"Данные комментария"
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 201 	{object}	entities.CommentResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Success		 201 	{object}	schema.CourseCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      401    {object}	schema.ErrorResponse
+// @Failure      404    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/comment [post]
 func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	var req schema.CourseCommentRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondWithError(w, http.StatusBadRequest, "Invalid JSON")
+		return
+	}
+
+	if req.CourseID == 0 || req.Comment == "" {
+		h.respondWithError(w, http.StatusBadRequest, "course_id and comment are required")
+		return
+	}
+
+	userID, ok := r.Context().Value("user_id").(uint)
+	if !ok {
+		h.respondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	err := h.services.CommentService.CreateCourseComment(userID, req.CourseID, req.Comment)
+	if err != nil {
+		if err.Error() == "course not found" {
+			h.respondWithError(w, http.StatusNotFound, err.Error())
+		} else {
+			h.respondWithError(w, http.StatusInternalServerError, "Failed to add comment")
+		}
+		return
+	}
+
+	comments, err := h.services.CommentService.GetCourseComments(req.CourseID)
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	response := schema.CourseCommentsResponse{
+		Success:  true,
+		Comments: comments,
+	}
+	h.respondWithJSON(w, http.StatusCreated, response)
 }
 
 // GetCourseComment godoc
@@ -72,14 +111,29 @@ func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.CourceCommentGet		true	"Данные о курсе"
-// @Success		 200 	{array}		entities.CommentResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
+// @Param        course_id	query		integer	true	"ID курса"
+// @Success		 200 	{object}	schema.CourseCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
 // @Router       /course/comment [get]
 func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	courseIDStr := r.URL.Query().Get("course_id")
+	courseID, err := strconv.ParseUint(courseIDStr, 10, 32)
+	if err != nil || courseID == 0 {
+		h.respondWithError(w, http.StatusBadRequest, "valid course_id is required")
+		return
+	}
+
+	comments, err := h.services.CommentService.GetCourseComments(uint(courseID))
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	h.respondWithJSON(w, http.StatusOK, schema.CourseCommentsResponse{
+		Success:  true,
+		Comments: comments,
+	})
 }
 
 // GetCourseLessons godoc
@@ -114,7 +168,7 @@ func (h *Handler) GetCourseLessons(w http.ResponseWriter, r *http.Request) { // 
 	}
 }
 
-// GetCourseLessons godoc
+// GetCourseLesson godoc
 // @Summary      Получить урок курса
 // @Tags         cources
 // @Accept       json
@@ -147,19 +201,57 @@ func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) { // a
 }
 
 // PostLessonComment godoc
-// @Summary      Отправить комментарий к уроку
+// @Summary      Добавить комментарий к уроку
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.LessonCommentReq	true	"Комментарий к уроку"
+// @Param        body	body		schema.LessonCommentRequest	true	"Данные комментария"
 // @Param        Authorization	header	string	true	"Bearer"
-// @Success		 201 	{object}	entities.CommentResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
-// @Router       /course/lesson/comment [post]
+// @Success		 201 	{object}	schema.LessonCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      401    {object}	schema.ErrorResponse
+// @Failure      404    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
+// @Router       /lesson/comment [post]
 func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	var req schema.LessonCommentRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.respondWithError(w, http.StatusBadRequest, "Invalid JSON")
+		return
+	}
+
+	if req.LessonID == 0 || req.Comment == "" {
+		h.respondWithError(w, http.StatusBadRequest, "lesson_id and comment are required")
+		return
+	}
+
+	userID, ok := r.Context().Value("user_id").(uint)
+	if !ok {
+		h.respondWithError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	err := h.services.CommentService.CreateLessonComment(userID, req.LessonID, req.Comment)
+	if err != nil {
+		if err.Error() == "lesson not found" {
+			h.respondWithError(w, http.StatusNotFound, err.Error())
+		} else {
+			h.respondWithError(w, http.StatusInternalServerError, "Failed to add comment")
+		}
+		return
+	}
+
+	comments, err := h.services.CommentService.GetLessonComments(req.LessonID)
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	response := schema.LessonCommentsResponse{
+		Success:  true,
+		Comments: comments,
+	}
+	h.respondWithJSON(w, http.StatusCreated, response)
 }
 
 // GetLessonComment godoc
@@ -167,14 +259,29 @@ func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Tags         cources
 // @Accept       json
 // @Produce      json
-// @Param        body	body		entities.LessonCommentGet	true	"Данные о уроке"
-// @Success		 200 	{array}		entities.CommentResp
-// @Failure      400    {object}	entities.ErrorResponse
-// @Failure      404    {object}	entities.ErrorResponse
-// @Failure      500    {object}	entities.ErrorResponse
-// @Router       /course/lesson/comment [get]
+// @Param        lesson_id	query		integer	true	"ID урока"
+// @Success		 200 	{object}	schema.LessonCommentsResponse
+// @Failure      400    {object}	schema.ErrorResponse
+// @Failure      500    {object}	schema.ErrorResponse
+// @Router       /lesson/comment [get]
 func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	lessonIDStr := r.URL.Query().Get("lesson_id")
+	lessonID, err := strconv.ParseUint(lessonIDStr, 10, 32)
+	if err != nil || lessonID == 0 {
+		h.respondWithError(w, http.StatusBadRequest, "valid lesson_id is required")
+		return
+	}
+
+	comments, err := h.services.CommentService.GetLessonComments(uint(lessonID))
+	if err != nil {
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+		return
+	}
+
+	h.respondWithJSON(w, http.StatusOK, schema.LessonCommentsResponse{
+		Success:  true,
+		Comments: comments,
+	})
 }
 
 // SignupCourse godoc
@@ -242,4 +349,18 @@ func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
 // @Router       /course/lesson/homework [post]
 func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
 	panic("implement me")
+}
+
+// ---------------------- Вспомогательные методы ----------------------
+func (h *Handler) respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(payload)
+}
+
+func (h *Handler) respondWithError(w http.ResponseWriter, code int, message string) {
+	resp := schema.ErrorResponse{}
+	resp.Error.Code = code
+	resp.Error.Message = message
+	h.respondWithJSON(w, code, resp)
 }

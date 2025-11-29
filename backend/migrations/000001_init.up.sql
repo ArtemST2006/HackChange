@@ -40,14 +40,16 @@ CREATE TABLE comments_courses (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES student(id) ON DELETE CASCADE,
     course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-    comment TEXT NOT NULL
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE comments_lessons (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES student(id) ON DELETE CASCADE,
     lesson_id INTEGER NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
-    comment TEXT NOT NULL
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE homework (

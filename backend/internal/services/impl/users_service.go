@@ -1,4 +1,4 @@
-package services
+package impl
 
 import (
 	"github.com/ArtemST2006/HackChange/internal/repository"
@@ -10,7 +10,7 @@ type UserService struct {
 }
 
 func NewUserService(repo repository.User) *UserService {
-	return &UserService{ repo: repo }
+	return &UserService{repo: repo}
 }
 
 func (s *UserService) GetUser(studentID uint) (*schema.StudentProfile, error) {
@@ -23,7 +23,7 @@ func (s *UserService) GetUser(studentID uint) (*schema.StudentProfile, error) {
 	resp.Student.Id = student.ID
 	resp.Student.Email = student.Email
 	resp.Student.Username = student.UserName
-	resp.StudentData.Name =	studentData.Name
+	resp.StudentData.Name = studentData.Name
 	resp.StudentData.Course = studentData.Course
 	resp.StudentData.DateOfBirth = studentData.DateOfBirth
 	resp.StudentData.GPA = studentData.GPA
@@ -49,7 +49,7 @@ func (s *UserService) GetUserCourses(UserID uint) (*[]schema.CourseDB, error) {
 	return courses, nil
 }
 
-func (s *UserService) UserChangePass(UserID uint, req *schema.UserChangePassReq)  (*uint, error) {
+func (s *UserService) UserChangePass(UserID uint, req *schema.UserChangePassReq) (*uint, error) {
 	if err := s.repo.UserChangePass(UserID, req); err != nil {
 		return nil, err
 	}
