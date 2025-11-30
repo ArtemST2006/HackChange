@@ -25,6 +25,11 @@ func (c *CoursesRepository) GetAllCourses() ([]schema.CourseDB, error) {
 		return nil, fmt.Errorf("failed to fetch courses: %w", err)
 	}
 
+	// If no courses found, return empty slice (not nil, which would serialize as null in JSON)
+	if len(courses) == 0 {
+		return []schema.CourseDB{}, nil
+	}
+
 	var result []schema.CourseDB
 	for _, course := range courses {
 		var professorName string

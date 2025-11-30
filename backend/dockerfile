@@ -25,9 +25,12 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/
 
 RUN echo '#!/bin/sh' > entrypoint.sh && \
     echo '' >> entrypoint.sh && \
+    echo 'echo "Waiting for database..."' >> entrypoint.sh && \
+    echo 'sleep 5' >> entrypoint.sh && \
+    echo '' >> entrypoint.sh && \
     echo 'if [ ! -f /root/migrations_done ]; then' >> entrypoint.sh && \
-    echo '  echo "Running migrations..."' >> entrypoint.sh && \
-    echo '  ./migrate -path ./migrations -database "$DATABASE_URL" up' >> entrypoint.sh && \
+    echo '  echo "Running migrations with migrate tool..."' >> entrypoint.sh && \
+    echo '  ./migrate -path ./migrations -database "$DATABASE_URL" up || true' >> entrypoint.sh && \
     echo '  touch /root/migrations_done' >> entrypoint.sh && \
     echo 'else' >> entrypoint.sh && \
     echo '  echo "Migrations already applied"' >> entrypoint.sh && \

@@ -72,12 +72,14 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Get("/dashboard", h.GetDashboard)
 	r.Get("/courses", h.GetAllCourses)
 
+	// Public course signup endpoint (no auth required)
+	r.Post("/course/lesson/signup", h.SignupCourse)
+
 	r.Route("/course", func(course chi.Router) {
 		h.authMiddleware(course)
 		course.Get("/dashboard", h.GetCourseDashboard) // art
 		course.Get("/lessons", h.GetCourseLessons)     // art
 		course.Get("/lesson", h.GetCourseLesson)       // art
-		course.Post("/lesson/signup", h.SignupCourse)  // art
 		course.Get("/comment", h.GetCourseComment)
 		course.Post("/comment", h.PostCourseComment)
 	})
