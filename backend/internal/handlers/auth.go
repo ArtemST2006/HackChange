@@ -8,9 +8,8 @@ import (
 	"github.com/ArtemST2006/HackChange/internal/schema"
 )
 
-
-type RefreshReq struct{
-	Email string        `json:"email"`
+type RefreshReq struct {
+	Email        string `json:"email"`
 	RefreshToken string `json:"refresh_token"`
 }
 
@@ -26,7 +25,7 @@ type RefreshReq struct{
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var input schema.RegistrationReq
 
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -35,7 +34,6 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	user.Email = input.Email
 	user.HashPassword = input.HashedPassword
 	user.UserName = input.Username
-<<<<<<< HEAD
 
 	var user_data schema.StudentData
 	user_data.Name = input.Name
@@ -43,16 +41,9 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	user_data.DateOfBirth = &input.DateOfBirth
 	user_data.Course = input.Cource
 	user_data.GPA = &input.GPA
-	
-	
 
-	id , err := h.services.Authorization.CreateUser(user, user_data)
-=======
-	
-
-	id , err := h.services.Authorization.CreateUser(user)
->>>>>>> origin/Front_bombas
-	if err != nil{
+	id, err := h.services.Authorization.CreateUser(user, user_data)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -76,27 +67,27 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var input schema.LoginReq
 
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	token, in, err := h.services.GetUserA(input.Email, input.HashedPassword) 
-	if err != nil{
+	token, in, err := h.services.GetUserA(input.Email, input.HashedPassword)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if in.ID == 0{
+	if in.ID == 0 {
 		http.Error(w, "user not found", http.StatusNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	http.SetCookie(w, &http.Cookie{
-		Name: "refresh_token",
-		Value: token.RefreshToken,
-		Path: "/",
-		Expires: time.Now().Add(7 * 24 * time.Hour),
+		Name:     "refresh_token",
+		Value:    token.RefreshToken,
+		Path:     "/",
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
 		HttpOnly: true,
 		Secure:   true,
 	})
@@ -105,7 +96,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		"token": token.AccessToken,
 	})
 }
-
 
 // RefreshToken godoc
 // @Summary      Овновить JWT токен
@@ -122,17 +112,17 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token,  err := h.services.Authorization.RefreshToken(cookie.Value)
-	if err != nil{
+	token, err := h.services.Authorization.RefreshToken(cookie.Value)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	http.SetCookie(w, &http.Cookie{
-		Name: "refresh_token",
-		Value: token.RefreshToken,
-		Path: "/",
-		Expires: time.Now().Add(7 * 24 * time.Hour),
+		Name:     "refresh_token",
+		Value:    token.RefreshToken,
+		Path:     "/",
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
 		HttpOnly: true,
 		Secure:   true,
 	})
@@ -140,7 +130,6 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		"token": token.AccessToken,
 	})
 }
-
 
 // Logout godoc
 // @Summary      Выйти из системы
@@ -153,14 +142,13 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 // @Router       /auth/logout [post]
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 
-
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
 		http.Error(w, "refresh token not found", http.StatusBadRequest)
 		return
 	}
 	err = h.services.Authorization.Logout(cookie.Value)
-	if err != nil{
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -169,5 +157,5 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "user logged out",
 	})
-	
+
 }
