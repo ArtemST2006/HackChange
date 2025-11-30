@@ -13,7 +13,7 @@ type Authorization interface {
 	GenerateJWTRToken(uint) (*impl.TokenPair, error)
 	GenerateHashPassword(string) (string, error)
 	RefreshToken(string) (*impl.TokenPair, error)
-	CreateUser(schema.Student) (uint, error)
+	CreateUser(schema.Student, schema.StudentData) (uint, error)
 	GetUserA(string, string) (*impl.TokenPair, *schema.Student, error)
 	Logout(string) error
 }

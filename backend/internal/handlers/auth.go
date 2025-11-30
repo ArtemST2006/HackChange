@@ -35,9 +35,17 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	user.Email = input.Email
 	user.HashPassword = input.HashedPassword
 	user.UserName = input.Username
+
+	var user_data schema.StudentData
+	user_data.Name = input.Name
+	user_data.StudentCards = input.StudentCard
+	user_data.DateOfBirth = &input.DateOfBirth
+	user_data.Course = input.Cource
+	user_data.GPA = &input.GPA
+	
 	
 
-	id , err := h.services.Authorization.CreateUser(user)
+	id , err := h.services.Authorization.CreateUser(user, user_data)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

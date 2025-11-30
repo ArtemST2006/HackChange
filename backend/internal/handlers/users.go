@@ -23,20 +23,52 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
 		return
 	}
 
-	studentID := uint(claims["user_id"].(uint))
+	userIDClaim, exists := claims["user_id"]
+    if !exists {
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "user_id not found in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
+
+    // Конвертируем в uint безопасно
+    var studentID uint
+    switch v := userIDClaim.(type) {
+    case float64:
+        studentID = uint(v)
+    case int:
+        studentID = uint(v)
+    case int64:
+        studentID = uint(v)
+    case uint:
+        studentID = v
+    case uint64:
+        studentID = uint(v)
+    default:
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "invalid user_id type in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
 
 	profile, err := h.services.User.GetUser(studentID)
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
@@ -58,7 +90,7 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 // @Success		 200 	{object}	map[string]interface{} "id: идентификатор пользователя"
 // @Failure      400    {object}	schema.ErrorResponse
 // @Failure      500    {object}	schema.ErrorResponse
-// @Router       /user/edit [put]
+// @Router       /user/profile [put]
 func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
@@ -71,7 +103,39 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentID := uint(claims["user_id"].(uint))
+	userIDClaim, exists := claims["user_id"]
+    if !exists {
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "user_id not found in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
+
+    // Конвертируем в uint безопасно
+    var studentID uint
+    switch v := userIDClaim.(type) {
+    case float64:
+        studentID = uint(v)
+    case int:
+        studentID = uint(v)
+    case int64:
+        studentID = uint(v)
+    case uint:
+        studentID = v
+    case uint64:
+        studentID = uint(v)
+    default:
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "invalid user_id type in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
 
 	var updateData schema.StudentProfile
 	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
@@ -123,7 +187,39 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentID := uint(claims["user_id"].(uint))
+	userIDClaim, exists := claims["user_id"]
+    if !exists {
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "user_id not found in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
+
+    // Конвертируем в uint безопасно
+    var studentID uint
+    switch v := userIDClaim.(type) {
+    case float64:
+        studentID = uint(v)
+    case int:
+        studentID = uint(v)
+    case int64:
+        studentID = uint(v)
+    case uint:
+        studentID = v
+    case uint64:
+        studentID = uint(v)
+    default:
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "invalid user_id type in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
 
 	courses, err := h.services.User.GetUserCourses(studentID)
 	if err != nil {
@@ -151,26 +247,58 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 // @Success		 200 	{object}	map[string]interface{} "id: идентификатор пользователя"
 // @Failure      400    {object}	schema.ErrorResponse
 // @Failure      500    {object}	schema.ErrorResponse
-// @Router       /user/change_pass [put]
+// @Router       /user/password [put]
 func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
 		return
 	}
 
-	studentID := uint(claims["user_id"].(uint))
+	userIDClaim, exists := claims["user_id"]
+    if !exists {
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "user_id not found in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
+
+    // Конвертируем в uint безопасно
+    var studentID uint
+    switch v := userIDClaim.(type) {
+    case float64:
+        studentID = uint(v)
+    case int:
+        studentID = uint(v)
+    case int64:
+        studentID = uint(v)
+    case uint:
+        studentID = v
+    case uint64:
+        studentID = uint(v)
+    default:
+        var resp schema.ErrorResponse
+        resp.Error.Code = http.StatusBadRequest
+        resp.Error.Message = "invalid user_id type in token"
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(resp.Error.Code)
+        json.NewEncoder(w).Encode(resp)
+        return
+    }
 
 	var updateData schema.UserChangePassReq
 	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
@@ -181,7 +309,7 @@ func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)

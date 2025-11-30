@@ -13,8 +13,29 @@ func NewAuthPostgres(db *gorm.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
-func (r *AuthPostgres) CreateUser(student schema.Student) (uint, error) {
-	result := r.db.Create(&student)
+func (r *AuthPostgres) CreateUser(student schema.Student, student_data schema.StudentData) (uint, error) {
+	tx := r.db.Begin()
+	defer func() {
+		if s := recover(); s != nil {
+			tx.Rollback()
+		}
+	}()
+
+	result := tx.Create(&student)
+	if err := result.Error; err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	student_data.UserID = student.ID
+
+	result = tx.Create(&student_data)
+	if err := result.Error; err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	result = tx.Commit()
 	if err := result.Error; err != nil {
 		return 0, err
 	}

@@ -8,9 +8,9 @@ const docTemplate = `{
     "swagger": "2.0",
     "info": {
         "description": "{{escape .Description}}",
-        "title": "{{.Title}}",
+        "title": "{{hackchange api}}",
         "contact": {},
-        "version": "{{.Version}}"
+        "version": "{{1.0.0}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
@@ -693,59 +693,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/change_pass": {
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Изменить пароль пользователя",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Изменения пароля",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/schema.UserChangePassReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "id: идентификатор пользователя",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/user/courses": {
             "get": {
                 "consumes": [
@@ -814,7 +761,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/edit": {
+        "/user/password": {
             "put": {
                 "consumes": [
                     "application/json"
@@ -825,7 +772,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Изменить профиль пользователя",
+                "summary": "Изменить пароль пользователя",
                 "parameters": [
                     {
                         "type": "string",
@@ -835,12 +782,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Изменения профиля",
+                        "description": "Изменения пароля",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/schema.StudentProfile"
+                            "$ref": "#/definitions/schema.UserChangePassReq"
                         }
                     }
                 ],
@@ -893,6 +840,57 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/schema.StudentProfile"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Изменить профиль пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Изменения профиля",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.StudentProfile"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "id: идентификатор пользователя",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorResponse"
                         }
                     },
                     "500": {
@@ -1191,7 +1189,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "cource": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "date_of_birth": {
                     "type": "string"

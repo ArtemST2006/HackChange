@@ -34,18 +34,18 @@ type TokenPair struct {
 	ExpiresIn    time.Duration `json:"expires_in"`
 }
 
-func (s *AuthService) CreateUser(user schema.Student) (uint, error) {
+func (s *AuthService) CreateUser(user schema.Student, user_data schema.StudentData) (uint, error) {
 	if !govalidator.IsEmail(user.Email) {
 		//s.log.Error("invalid email format")
-		return 0, fmt.Errorf("invalid credentials")
+		return 0, fmt.Errorf("invalid credentials email")
 	}
 	if user.HashPassword == "" || len(user.HashPassword) < 8 {
 		//s.log.Error("password too short or empty")
-		return 0, fmt.Errorf("invalid credentials")
+		return 0, fmt.Errorf("invalid credentials password")
 	}
 	user.HashPassword, _ = s.GenerateHashPassword(user.HashPassword)
 	//s.log.Info("creating user", "email", user.Email)
-	return s.repo.CreateUser(user)
+	return s.repo.CreateUser(user, user_data)
 }
 
 func (s *AuthService) GetUserA(email string, password string) (*TokenPair, *schema.Student, error) {

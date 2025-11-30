@@ -14,7 +14,7 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(schema.Student) (uint, error)
+	CreateUser(schema.Student, schema.StudentData) (uint, error)
 	GetUser(string) (*schema.Student, error)
 	CreateRefreshToken(schema.RefreshToken) error
 	GetValidRefreshToken(string) (*schema.RefreshToken, error)

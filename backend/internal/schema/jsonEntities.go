@@ -37,8 +37,8 @@ type RegistrationReq struct {
 	Name           string  `json:"name"`
 	StudentCard    string  `json:"student_card"`
 	DateOfBirth    string  `json:"date_of_birth"`
-	Cource         int     `json:"cource"`
-	GPA            float64 `json:"gpa"`
+	Cource         string  `json:"cource"`
+	GPA            float32 `json:"gpa"`
 }
 
 type RegistrationResp struct {
@@ -78,8 +78,8 @@ type StudentProfile struct {
 
 type UserChangePassReq struct {
 	Email             string `json:"email"`
-	HashedOldPassword string `json:"old_password"`
-	HashedNewPassword string `json:"new_password"`
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
 }
 
 type CourseDB struct {

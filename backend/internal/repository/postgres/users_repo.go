@@ -5,6 +5,7 @@ import (
 
 	"errors"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -83,14 +84,26 @@ func (r *UserRepo) UserChangePass(userID uint, passwords *schema.UserChangePassR
 		return err
 	}
 
-	if student.Email != passwords.Email || student.HashPassword != passwords.HashedOldPassword {
+	err := bcrypt.CompareHashAndPassword([]byte(student.HashPassword), []byte(passwords.OldPassword))
+
+	if student.Email != passwords.Email || err != nil {
 		err := errors.New("invalid email or password")
 		return err
 	}
 
-	if err := r.db.Model(&student).Update("hash_password", passwords.HashedNewPassword).Error; err != nil {
+	hash, _ := r.GenerateHashPassword(passwords.NewPassword)
+
+	if err := r.db.Model(&student).Update("hash_password", hash).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (r *UserRepo) GenerateHashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) // австоматически генерирует соль
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
 }

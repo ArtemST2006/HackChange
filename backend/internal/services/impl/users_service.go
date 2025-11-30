@@ -19,7 +19,7 @@ func (s *UserService) GetUser(studentID uint) (*schema.StudentProfile, error) {
 		return nil, err
 	}
 
-	var resp *schema.StudentProfile
+	resp := &schema.StudentProfile{}
 	resp.Student.Id = student.ID
 	resp.Student.Email = student.Email
 	resp.Student.Username = student.UserName

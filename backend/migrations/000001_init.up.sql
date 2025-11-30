@@ -76,7 +76,7 @@ CREATE TABLE student_data (
     name VARCHAR(255),
     date_of_birth DATE,
     course VARCHAR(255),  -- можно оставить, если нужно для кэширования
-    gpa NUMERIC(3,2) CHECK (gpa >= 0.0 AND gpa <= 4.0)
+    gpa NUMERIC(3,2) CHECK (gpa >= 0.0 AND gpa <= 5.0)
 );
 
 CREATE TABLE professor_data (
