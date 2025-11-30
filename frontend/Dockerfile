@@ -12,6 +12,11 @@ RUN npm ci
 # Копируем исходный код
 COPY . .
 
+# Устанавливаем переменные окружения для production build
+# VITE_API_BASE_URL должна быть установлена при запуске docker build или в docker-compose.yml
+ARG VITE_API_BASE_URL=http://146.185.210.135:8000
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Собираем приложение
 RUN npm run build
 
