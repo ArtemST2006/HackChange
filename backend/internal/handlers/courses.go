@@ -314,7 +314,7 @@ func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Param        Authorization	header	string	true	"Bearer"
 // @Success		 201 	{object}	schema.SignupCourseResp
 // @Failure      500    {object}	schema.ErrorResponse
-// @Router       /course/lesson/sign_up [post]
+// @Router       /course/lesson/signup [post]
 func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
 	request := schema.SignupCourseReq{}
 

@@ -75,6 +75,10 @@ func (r *UserRepo) GetUserCourses(userID uint) (*[]schema.CourseDB, error) {
 		return nil, result.Error
 	}
 
+	if courses == nil {
+		courses = []schema.CourseDB{}
+	}
+
 	return &courses, nil
 }
 
