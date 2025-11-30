@@ -93,7 +93,7 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
@@ -137,7 +137,7 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
@@ -148,7 +148,7 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
@@ -176,7 +176,7 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
@@ -221,7 +221,7 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		var resp schema.ErrorResponse
 		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
+		resp.Error.Message = err.Error()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.Error.Code)
 		json.NewEncoder(w).Encode(resp)
