@@ -38,7 +38,11 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var user_data schema.StudentData
 	user_data.Name = input.Name
 	user_data.StudentCards = input.StudentCard
-	user_data.DateOfBirth = &input.DateOfBirth
+	if input.DateOfBirth != "" {
+		user_data.DateOfBirth = &input.DateOfBirth
+	} else {
+		user_data.DateOfBirth = nil
+	}
 	user_data.Course = input.Cource
 	user_data.GPA = &input.GPA
 

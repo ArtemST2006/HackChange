@@ -171,7 +171,7 @@ cp .env.example .env
 
 2. Укажите URL вашего API:
 ```
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ### Использование API сервисов
