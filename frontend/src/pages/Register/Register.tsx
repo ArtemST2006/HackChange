@@ -10,11 +10,6 @@ export const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-<<<<<<< HEAD
-    email: '',
-    password: '',
-    confirmPassword: '',
-=======
     username: '',
     email: '',
     password: '',
@@ -23,7 +18,6 @@ export const Register: React.FC = () => {
     dateOfBirth: '',
     course: '',
     gpa: 0,
->>>>>>> origin/Front_bombas
     agreeToTerms: false,
   });
   const [showPassword] = useState(false);
@@ -44,25 +38,17 @@ export const Register: React.FC = () => {
       return;
     }
 
-<<<<<<< HEAD
-=======
     if (formData.password.length < 8) {
       setError('Пароль должен содержать минимум 8 символов');
       return;
     }
 
->>>>>>> origin/Front_bombas
     setIsLoading(true);
     try {
       await register(formData);
       navigate('/dashboard');
-<<<<<<< HEAD
-    } catch (err) {
-      setError('Ошибка регистрации');
-=======
     } catch (err: any) {
       setError(err.message || 'Ошибка регистрации');
->>>>>>> origin/Front_bombas
     } finally {
       setIsLoading(false);
     }
@@ -77,22 +63,6 @@ export const Register: React.FC = () => {
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
-<<<<<<< HEAD
-          <Input
-            label="Имя"
-            value={formData.firstName}
-            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-            fullWidth
-            required
-          />
-
-          <Input
-            label="Фамилия"
-            value={formData.lastName}
-            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-            fullWidth
-            required
-=======
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <Input
               label="Имя"
@@ -118,7 +88,6 @@ export const Register: React.FC = () => {
             fullWidth
             required
             helperText="Уникальное имя для входа"
->>>>>>> origin/Front_bombas
           />
 
           <Input
@@ -149,8 +118,6 @@ export const Register: React.FC = () => {
             required
           />
 
-<<<<<<< HEAD
-=======
           <Input
             label="Номер студенческого билета"
             value={formData.studentCard}
@@ -211,7 +178,6 @@ export const Register: React.FC = () => {
             step="0.01"
           />
 
->>>>>>> origin/Front_bombas
           <label className="checkbox-label">
             <input
               type="checkbox"

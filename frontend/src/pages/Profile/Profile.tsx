@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Header, Button, Input, Card } from '../../components/shared';
 import { useAuth } from '../../context/AuthContext';
+import { userService } from '../../services/api/user.service';
+import { authService } from '../../services/api/auth.service';
+import { adaptUserToStudentProfile } from '../../utils/adapters';
 import './Profile.css';
 
 type TabType = 'personal' | 'security';
@@ -9,14 +12,19 @@ export const Profile: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('personal');
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
   const [personalInfo, setPersonalInfo] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    phone: user?.phone || '',
-    city: user?.city || '',
-    bio: user?.bio || '',
+    username: user?.username || '',
+    studentCard: (user as any)?.studentCard || '',
+    course: (user as any)?.course || '',
+    gpa: (user as any)?.gpa || 0,
+    birthDate: user?.birthDate || '',
   });
 
   const [securityData, setSecurityData] = useState({
@@ -25,14 +33,79 @@ export const Profile: React.FC = () => {
     confirmPassword: '',
   });
 
-  const handleSavePersonal = () => {
-    console.log('Saving personal info:', personalInfo);
-    setIsEditing(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  const handleSavePersonal = async () => {
+    if (!user) return;
+
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(null);
+
+    try {
+      // Create updated user object
+      const updatedUser = {
+        ...user,
+        firstName: personalInfo.firstName,
+        lastName: personalInfo.lastName,
+        email: personalInfo.email,
+        username: personalInfo.username,
+        studentCard: personalInfo.studentCard,
+        course: personalInfo.course,
+        gpa: personalInfo.gpa,
+        birthDate: personalInfo.birthDate,
+      };
+
+      // Convert to backend format
+      const profileData = adaptUserToStudentProfile(updatedUser);
+
+      // Send to API
+      await userService.updateProfile(profileData);
+
+      setSaveSuccess('Профиль успешно обновлен');
+      setIsEditing(false);
+    } catch (error: any) {
+      setSaveError(error.message || 'Ошибка сохранения профиля');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleChangePassword = () => {
-    console.log('Changing password:', securityData);
-    setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const handleChangePassword = async () => {
+    if (!user) return;
+
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    // Validate passwords
+    if (securityData.newPassword !== securityData.confirmPassword) {
+      setPasswordError('Пароли не совпадают');
+      return;
+    }
+
+    if (securityData.newPassword.length < 8) {
+      setPasswordError('Новый пароль должен содержать минимум 8 символов');
+      return;
+    }
+
+    setIsChangingPassword(true);
+
+    try {
+      await authService.changePassword({
+        email: user.email,
+        old_password: securityData.currentPassword,
+        new_password: securityData.newPassword,
+      });
+
+      setPasswordSuccess('Пароль успешно изменен');
+      setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error: any) {
+      setPasswordError(error.message || 'Ошибка изменения пароля');
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
 
   const renderTabContent = () => {
@@ -51,15 +124,18 @@ export const Profile: React.FC = () => {
                 </Button>
               ) : (
                 <div className="button-group">
-                  <Button variant="outline" onClick={() => setIsEditing(false)}>
+                  <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>
                     Отмена
                   </Button>
-                  <Button variant="primary" onClick={handleSavePersonal}>
+                  <Button variant="primary" onClick={handleSavePersonal} isLoading={isSaving}>
                     Сохранить
                   </Button>
                 </div>
               )}
             </div>
+
+            {saveError && <div className="error-message">{saveError}</div>}
+            {saveSuccess && <div className="success-message">{saveSuccess}</div>}
 
             <div className="form-grid">
               <Input
@@ -85,32 +161,44 @@ export const Profile: React.FC = () => {
                 fullWidth
               />
               <Input
-                label="Телефон"
-                type="tel"
-                value={personalInfo.phone}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                label="Имя пользователя"
+                value={personalInfo.username}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, username: e.target.value })}
                 disabled={!isEditing}
                 fullWidth
               />
             </div>
 
-            <Input
-              label="Город"
-              value={personalInfo.city}
-              onChange={(e) => setPersonalInfo({ ...personalInfo, city: e.target.value })}
-              disabled={!isEditing}
-              fullWidth
-            />
-
-            <div className="form-field">
-              <label className="field-label">О себе</label>
-              <textarea
-                className={`bio-textarea ${!isEditing ? 'disabled' : ''}`}
-                value={personalInfo.bio}
-                onChange={(e) => setPersonalInfo({ ...personalInfo, bio: e.target.value })}
+            <div className="form-grid">
+              <Input
+                label="Номер студенческого билета"
+                value={personalInfo.studentCard}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, studentCard: e.target.value })}
                 disabled={!isEditing}
-                rows={4}
-                placeholder="Расскажите о себе..."
+                fullWidth
+              />
+              <Input
+                label="Курс обучения"
+                value={personalInfo.course}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, course: e.target.value })}
+                disabled={!isEditing}
+                fullWidth
+              />
+              <Input
+                label="Средний балл (GPA)"
+                type="number"
+                value={personalInfo.gpa}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, gpa: parseFloat(e.target.value) || 0 })}
+                disabled={!isEditing}
+                fullWidth
+              />
+              <Input
+                label="Дата рождения"
+                type="date"
+                value={personalInfo.birthDate}
+                onChange={(e) => setPersonalInfo({ ...personalInfo, birthDate: e.target.value })}
+                disabled={!isEditing}
+                fullWidth
               />
             </div>
           </div>
@@ -128,6 +216,10 @@ export const Profile: React.FC = () => {
 
             <Card className="security-card">
               <h3>Изменить пароль</h3>
+
+              {passwordError && <div className="error-message">{passwordError}</div>}
+              {passwordSuccess && <div className="success-message">{passwordSuccess}</div>}
+
               <div className="form-stack">
                 <Input
                   label="Текущий пароль"
@@ -142,6 +234,7 @@ export const Profile: React.FC = () => {
                   value={securityData.newPassword}
                   onChange={(e) => setSecurityData({ ...securityData, newPassword: e.target.value })}
                   fullWidth
+                  helperText="Минимум 8 символов"
                 />
                 <Input
                   label="Подтвердите пароль"
@@ -150,14 +243,18 @@ export const Profile: React.FC = () => {
                   onChange={(e) => setSecurityData({ ...securityData, confirmPassword: e.target.value })}
                   fullWidth
                 />
-                <Button variant="primary" onClick={handleChangePassword}>
+                <Button
+                  variant="primary"
+                  onClick={handleChangePassword}
+                  isLoading={isChangingPassword}
+                  disabled={!securityData.currentPassword || !securityData.newPassword || !securityData.confirmPassword}
+                >
                   Изменить пароль
                 </Button>
               </div>
             </Card>
           </div>
         );
-
     }
   };
 
@@ -171,7 +268,7 @@ export const Profile: React.FC = () => {
             <div className="profile-avatar-section">
               <div className="profile-avatar">
                 <img
-                  src={user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=student&backgroundColor=2e1a7c'}
+                  src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username || 'student'}&backgroundColor=2e1a7c`}
                   alt={user?.firstName}
                 />
               </div>
@@ -181,7 +278,6 @@ export const Profile: React.FC = () => {
                 <span className="profile-role-badge">{user?.role === 'student' ? 'Студент' : 'Преподаватель'}</span>
               </div>
             </div>
-            <Button variant="outline">Загрузить фото</Button>
           </div>
 
           {/* Tabs */}
@@ -200,7 +296,6 @@ export const Profile: React.FC = () => {
             </button>
           </div>
 
-          {}
           {renderTabContent()}
         </div>
       </main>

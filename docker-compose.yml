@@ -30,10 +30,15 @@ services:
         DB_PASSWORD: ${DB_PASSWORD}
         SSL_MODE: ${SSL_MODE}
         JWT_SECRET: ${JWT_SECRET}
+        MINIO_ENDPOINT: minio:9000
+        MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+        MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
       - "8000:8000"
     depends_on:
       postgres:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     volumes:
       - ./uploads:/app/uploads
@@ -50,13 +55,15 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
       - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   frontend:
     build:

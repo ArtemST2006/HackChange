@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header, Card } from '../../components/shared';
-import { mockCourses } from '../../utils/mockData';
+import { userService } from '../../services/api/user.service';
+import { adaptCourseDBToCourse } from '../../utils/adapters';
+import type { Course } from '../../types';
 import './Courses.css';
 
 type TabType = 'all' | 'active' | 'completed';
@@ -10,8 +12,30 @@ export const Courses: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('active');
   const [searchQuery, setSearchQuery] = useState('');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredCourses = mockCourses.filter((course) => {
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const coursesDB = await userService.getEnrolledCourses();
+        const adaptedCourses = coursesDB.map(adaptCourseDBToCourse);
+        setCourses(adaptedCourses);
+      } catch (err: any) {
+        setError(err.message || 'Ошибка загрузки курсов');
+        setCourses([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const filteredCourses = courses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -23,8 +47,24 @@ export const Courses: React.FC = () => {
     return matchesSearch;
   });
 
-  const activeCourses = mockCourses.filter(c => c.isActive);
-  const completedCourses = mockCourses.filter(c => c.progress === 100);
+  const activeCourses = courses.filter(c => c.isActive);
+  const completedCourses = courses.filter(c => c.progress === 100);
+
+  if (isLoading) {
+    return (
+      <div className="courses-page">
+        <Header />
+        <main className="courses-main">
+          <div className="container">
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <p>Загрузка курсов...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="courses-page">
@@ -69,7 +109,7 @@ export const Courses: React.FC = () => {
                     <path d="M6 11H12M6 14H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <span className="stat-number">{mockCourses.length}</span>
+                <span className="stat-number">{courses.length}</span>
                 <span className="stat-label">Всего</span>
               </div>
             </div>
@@ -113,9 +153,16 @@ export const Courses: React.FC = () => {
               onClick={() => setActiveTab('all')}
             >
               <span className="tab-text">Все курсы</span>
-              <span className="tab-count">{mockCourses.length}</span>
+              <span className="tab-count">{courses.length}</span>
             </button>
           </div>
+
+          {/* Ошибка */}
+          {error && (
+            <div className="error-state">
+              <p>{error}</p>
+            </div>
+          )}
 
           {/* Список курсов */}
           <div className="courses-grid">
@@ -128,7 +175,11 @@ export const Courses: React.FC = () => {
                   </svg>
                 </div>
                 <h3>Курсы не найдены</h3>
-                <p>Попробуйте изменить фильтры или поисковый запрос</p>
+                <p>
+                  {courses.length === 0
+                    ? 'Вы еще не записаны ни на один курс'
+                    : 'Попробуйте изменить фильтры или поисковый запрос'}
+                </p>
               </div>
             ) : (
               filteredCourses.map((course) => (
@@ -151,25 +202,13 @@ export const Courses: React.FC = () => {
                       <span>{course.teacherName}</span>
                     </div>
 
-                    <div className="course-info-row">
-                      {course.duration && (
+                    {course.category && (
+                      <div className="course-info-row">
                         <span className="info-badge">
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
-                            <path d="M8 4V8L11 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                          </svg>
-                          <span>{course.duration}ч</span>
+                          <span>{course.category}</span>
                         </span>
-                      )}
-                      {course.rating && (
-                        <span className="info-badge">
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M8 1L10 6L15 6.5L11.5 10L12.5 15L8 12.5L3.5 15L4.5 10L1 6.5L6 6L8 1Z" fill="currentColor"/>
-                          </svg>
-                          <span>{course.rating}</span>
-                        </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     <div className="course-progress-section">
                       <div className="progress-header">

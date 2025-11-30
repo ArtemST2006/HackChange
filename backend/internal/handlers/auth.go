@@ -3,15 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/ArtemST2006/HackChange/internal/schema"
 )
-
-type RefreshReq struct {
-	Email        string `json:"email"`
-	RefreshToken string `json:"refresh_token"`
-}
 
 // Register godoc
 // @Summary      Зарегестрировать пользователя
@@ -86,18 +80,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		writeErrorResponse(w, http.StatusNotFound, "user not found")
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh_token",
-		Value:    token.RefreshToken,
-		Path:     "/",
-		Expires:  time.Now().Add(7 * 24 * time.Hour),
-		HttpOnly: true,
-		Secure:   true,
-	})
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"email": in.Email,
-		"token": token.AccessToken,
+		"email":         in.Email,
+		"token":         token.AccessToken,
+		"refresh_token": token.RefreshToken,
 	})
 }
 
@@ -106,32 +94,36 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
+// @Param        body	body		map[string]string	true	"refresh_token"
 // @Success		 201 	{object}	schema.RefreshResp
+// @Failure      400    {object}	schema.ErrorResponse
 // @Failure      500    {object}	schema.ErrorResponse
 // @Router       /auth/refresh [post]
 func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("refresh_token")
-	if err != nil {
-		writeErrorResponse(w, http.StatusBadRequest, "refresh token not found")
+	var input struct {
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
-	token, err := h.services.Authorization.RefreshToken(cookie.Value)
+	if input.RefreshToken == "" {
+		writeErrorResponse(w, http.StatusBadRequest, "refresh_token is required")
+		return
+	}
+
+	token, err := h.services.Authorization.RefreshToken(input.RefreshToken)
 	if err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh_token",
-		Value:    token.RefreshToken,
-		Path:     "/",
-		Expires:  time.Now().Add(7 * 24 * time.Hour),
-		HttpOnly: true,
-		Secure:   true,
-	})
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"token": token.AccessToken,
+		"token":         token.AccessToken,
+		"refresh_token": token.RefreshToken,
 	})
 }
 
@@ -140,18 +132,27 @@ func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
+// @Param        body	body		map[string]string	true	"refresh_token"
 // @Success		 200 	{object}	map[string]interface{}
 // @Failure      400    {object}	schema.ErrorResponse
 // @Failure      500    {object}	schema.ErrorResponse
 // @Router       /auth/logout [post]
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		RefreshToken string `json:"refresh_token"`
+	}
 
-	cookie, err := r.Cookie("refresh_token")
-	if err != nil {
-		writeErrorResponse(w, http.StatusBadRequest, "refresh token not found")
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		writeErrorResponse(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
-	err = h.services.Authorization.Logout(cookie.Value)
+
+	if input.RefreshToken == "" {
+		writeErrorResponse(w, http.StatusBadRequest, "refresh_token is required")
+		return
+	}
+
+	err := h.services.Authorization.Logout(input.RefreshToken)
 	if err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
@@ -161,5 +162,4 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"message": "user logged out",
 	})
-
 }

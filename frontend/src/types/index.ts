@@ -4,10 +4,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-<<<<<<< HEAD
-=======
   username?: string;
->>>>>>> origin/Front_bombas
   patronymic?: string;
   avatar?: string;
   phone?: string;
@@ -17,14 +14,11 @@ export interface User {
   bio?: string;
   role: 'student' | 'teacher' | 'admin';
   registeredAt: string;
-<<<<<<< HEAD
-=======
 
   // Backend-specific fields (from StudentData)
   studentCard?: string; // student_card
   course?: string; // cource (typo in backend)
   gpa?: number; // grade point average
->>>>>>> origin/Front_bombas
 }
 
 // Course Types
@@ -196,8 +190,6 @@ export interface RegisterData {
   password: string;
   confirmPassword: string;
   agreeToTerms: boolean;
-<<<<<<< HEAD
-=======
 
   // Backend required fields
   username: string;
@@ -205,7 +197,6 @@ export interface RegisterData {
   dateOfBirth: string;
   course: string;
   gpa: number;
->>>>>>> origin/Front_bombas
 }
 
 // Dashboard Types

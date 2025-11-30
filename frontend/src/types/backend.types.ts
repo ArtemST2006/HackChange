@@ -30,7 +30,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   email: string;
   token: string; // JWT access token
-  // refresh_token is set as HttpOnly cookie, not in response
+  refresh_token: string; // Refresh token for token renewal
 }
 
 export interface RefreshResponse {
