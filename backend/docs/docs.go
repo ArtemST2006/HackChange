@@ -7,10 +7,8 @@ const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
     "swagger": "2.0",
     "info": {
-        "description": "{{escape .Description}}",
-        "title": "{{hackchange api}}",
-        "contact": {},
-        "version": "{{1.0.0}}"
+        "title": "hackchange",
+        "version": "1.0.0"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
@@ -469,7 +467,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/course/lesson/sign_up": {
+        "/course/lesson/signup": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -583,8 +581,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/schema.ErrorResponse"
-<<<<<<< HEAD
-=======
                         }
                     }
                 }
@@ -684,140 +680,6 @@ const docTemplate = `{
                         "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
->>>>>>> origin/Front_bombas
-                        }
-                    }
-                }
-            }
-        },
-<<<<<<< HEAD
-        "/lesson/comment": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cources"
-                ],
-                "summary": "Получить комментарии к уроку",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID урока",
-                        "name": "lesson_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/schema.LessonCommentsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-=======
-        "/user/change_pass": {
-            "put": {
->>>>>>> origin/Front_bombas
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cources"
-                ],
-                "summary": "Добавить комментарий к уроку",
-                "parameters": [
-                    {
-                        "description": "Данные комментария",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/schema.LessonCommentRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-<<<<<<< HEAD
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/schema.LessonCommentsResponse"
-=======
-                    },
-                    {
-                        "description": "Изменения пароля",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/schema.UserChangePassReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "id: идентификатор пользователя",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
->>>>>>> origin/Front_bombas
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-<<<<<<< HEAD
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-=======
->>>>>>> origin/Front_bombas
                         }
                     },
                     "500": {
@@ -897,67 +759,6 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-        "/user/password": {
-=======
-        "/user/edit": {
->>>>>>> origin/Front_bombas
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Изменить пароль пользователя",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Изменения пароля",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-<<<<<<< HEAD
-                            "$ref": "#/definitions/schema.UserChangePassReq"
-=======
-                            "$ref": "#/definitions/schema.StudentProfile"
->>>>>>> origin/Front_bombas
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "id: идентификатор пользователя",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/user/profile": {
             "get": {
                 "consumes": [
@@ -990,60 +791,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/schema.ErrorResponse"
-<<<<<<< HEAD
-                        }
-                    }
-                }
-            },
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Изменить профиль пользователя",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Изменения профиля",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/schema.StudentProfile"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "id: идентификатор пользователя",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorResponse"
-=======
->>>>>>> origin/Front_bombas
                         }
                     }
                 }

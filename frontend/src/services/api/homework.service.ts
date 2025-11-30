@@ -15,23 +15,36 @@ export const homeworkService = {
 
   async submitHomework(
     homeworkId: string,
+    hwMeta?: { courseName?: string; lessonName?: string; email?: string },
     textAnswer?: string,
     files?: File[]
   ): Promise<HomeworkSubmission> {
     const formData = new FormData();
 
+    const hwData = {
+      homework_id: homeworkId,
+      course_name: hwMeta?.courseName ?? '',
+      lesson_name: hwMeta?.lessonName ?? '',
+      email: hwMeta?.email ?? localStorage.getItem('email') ?? '',
+      files: [],
+    } as any;
+
     if (textAnswer) {
-      formData.append('textAnswer', textAnswer);
+      // include textual answer inside HW_data if provided
+      hwData.text_answer = textAnswer;
     }
 
     if (files && files.length > 0) {
       files.forEach((file) => {
-        formData.append('files', file);
+        formData.append('file', file);
+        hwData.files.push({ name: file.name, url: '' });
       });
     }
 
+    formData.append('HW_data', JSON.stringify(hwData));
+
     const response = await apiClient.upload<ApiResponse<HomeworkSubmission>>(
-      `/homeworks/${homeworkId}/submit`,
+      `/course/lesson/homework`,
       formData
     );
 

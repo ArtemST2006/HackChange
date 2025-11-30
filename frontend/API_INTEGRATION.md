@@ -6,7 +6,7 @@
 
 Фронтенд ожидает API на URL, указанном в переменной окружения:
 ```
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ## Аутентификация
@@ -384,19 +384,19 @@ try {
 
 ```bash
 # Login
-curl -X POST http://localhost:3000/api/auth/login \
+curl -X POST http://localhost:8000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 
 # Get dashboard (with auth)
-curl -X GET http://localhost:3000/api/dashboard \
+curl -X GET http://localhost:8000/dashboard \
   -H "Authorization: Bearer YOUR_TOKEN"
 
 # Get courses with filters
-curl -X GET "http://localhost:3000/api/courses?category=Programming&difficulty=beginner"
+curl -X GET "http://localhost:8000/courses?category=Programming&difficulty=beginner"
 
 # Submit homework
-curl -X POST http://localhost:3000/api/homeworks/hw-123/submit \
+curl -X POST http://localhost:8000/homeworks/hw-123/submit \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "textAnswer=My answer" \
   -F "files=@/path/to/file.pdf"
