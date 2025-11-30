@@ -49,7 +49,6 @@ func (r *AuthPostgres) GetUser(email string) (*schema.Student, error) {
 	return &user, result.Error
 }
 
-
 func (r *AuthPostgres) CreateRefreshToken(token schema.RefreshToken) error {
 	result := r.db.Create(&token)
 	if err := result.Error; err != nil {
@@ -64,7 +63,7 @@ func (r *AuthPostgres) GetValidRefreshToken(hash string) (*schema.RefreshToken, 
 	return &token, result.Error
 }
 
-func (r *AuthPostgres) RevokeRefreshToken(id uint) error{
+func (r *AuthPostgres) RevokeRefreshToken(id uint) error {
 	result := r.db.Model(&schema.RefreshToken{}).Where("id = ?", id).Update("revoked", true)
 	return result.Error
 }
@@ -73,7 +72,7 @@ func (r *AuthPostgres) RevokeAllRefreshTokens(hash string) error {
 	var token schema.RefreshToken
 
 	err := r.db.Select("user_id").Where("token_hash = ?", hash).First(&token)
-	if err != nil{
+	if err != nil {
 		return nil
 	}
 

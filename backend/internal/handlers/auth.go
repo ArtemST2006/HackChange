@@ -35,6 +35,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	user.Email = input.Email
 	user.HashPassword = input.HashedPassword
 	user.UserName = input.Username
+<<<<<<< HEAD
 
 	var user_data schema.StudentData
 	user_data.Name = input.Name
@@ -46,6 +47,11 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	
 
 	id , err := h.services.Authorization.CreateUser(user, user_data)
+=======
+	
+
+	id , err := h.services.Authorization.CreateUser(user)
+>>>>>>> origin/Front_bombas
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

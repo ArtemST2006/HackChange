@@ -1,5 +1,9 @@
 info:
+<<<<<<< HEAD
   title: hackchange api
+=======
+  title: hackchange
+>>>>>>> origin/Front_bombas
   version: 1.0.0
 definitions:
   schema.CommentResp:
@@ -248,6 +252,10 @@ definitions:
       old_password:
         type: string
     type: object
+<<<<<<< HEAD
+=======
+  contact: {}
+>>>>>>> origin/Front_bombas
 paths:
   /auth/login:
     post:
@@ -623,6 +631,16 @@ paths:
       - cources
   /lesson/comment:
     get:
+<<<<<<< HEAD
+      consumes:
+      - application/json
+      parameters:
+      - description: ID урока
+        in: query
+        name: lesson_id
+        required: true
+        type: integer
+=======
       consumes:
       - application/json
       parameters:
@@ -647,6 +665,91 @@ paths:
           schema:
             $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить комментарии к уроку
+      tags:
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные комментария
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LessonCommentRequest'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Добавить комментарий к уроку
+      tags:
+      - cources
+  /user/change_pass:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Изменения пароля
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserChangePassReq'
+>>>>>>> origin/Front_bombas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id: идентификатор пользователя'
+          schema:
+<<<<<<< HEAD
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+=======
+            additionalProperties: true
+            type: object
+>>>>>>> origin/Front_bombas
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+<<<<<<< HEAD
+      summary: Получить комментарии к уроку
+=======
+      summary: Изменить пароль пользователя
+>>>>>>> origin/Front_bombas
       tags:
       - cources
     post:
@@ -734,7 +837,11 @@ paths:
       summary: Получить главную страницу
       tags:
       - dashboard
+<<<<<<< HEAD
   /user/password:
+=======
+  /user/edit:
+>>>>>>> origin/Front_bombas
     put:
       consumes:
       - application/json
@@ -749,7 +856,11 @@ paths:
         name: body
         required: true
         schema:
+<<<<<<< HEAD
           $ref: '#/definitions/schema.UserChangePassReq'
+=======
+          $ref: '#/definitions/schema.StudentProfile'
+>>>>>>> origin/Front_bombas
       produces:
       - application/json
       responses:
@@ -766,7 +877,11 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/schema.ErrorResponse'
+<<<<<<< HEAD
       summary: Изменить пароль пользователя
+=======
+      summary: Изменить профиль пользователя
+>>>>>>> origin/Front_bombas
       tags:
       - users
   /user/profile:

@@ -1,0 +1,1 @@
+export { HomeworkDetail } from './HomeworkDetail';

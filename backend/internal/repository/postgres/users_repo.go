@@ -83,7 +83,6 @@ func (r *UserRepo) UserChangePass(userID uint, passwords *schema.UserChangePassR
 	if err := r.db.Where("id = ?", userID).First(&student).Error; err != nil {
 		return err
 	}
-
 	err := bcrypt.CompareHashAndPassword([]byte(student.HashPassword), []byte(passwords.OldPassword))
 
 	if student.Email != passwords.Email || err != nil {
