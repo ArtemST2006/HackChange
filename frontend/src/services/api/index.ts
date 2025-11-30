@@ -1,0 +1,13 @@
+export * from './client';
+export * from './auth.service';
+export * from './courses.service';
+export * from './homework.service';
+export * from './user.service';
+export * from './comments.service';
+
+// Re-export services for convenience
+export { authService } from './auth.service';
+export { coursesService } from './courses.service';
+export { homeworkService } from './homework.service';
+export { userService } from './user.service';
+export { commentsService } from './comments.service';

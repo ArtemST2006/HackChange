@@ -1,0 +1,945 @@
+info:
+<<<<<<< HEAD
+  title: hackchange api
+=======
+  title: hackchange
+>>>>>>> origin/Front_bombas
+  version: 1.0.0
+definitions:
+  schema.CommentResp:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  schema.Course:
+    properties:
+      courseName:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      professorID:
+        type: integer
+      type:
+        type: string
+    type: object
+  schema.CourseCommentRequest:
+    properties:
+      comment:
+        type: string
+      course_id:
+        type: integer
+    type: object
+  schema.CourseCommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/schema.CommentResp'
+        type: array
+      success:
+        type: boolean
+    type: object
+  schema.CourseDB:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      professor:
+        type: string
+      type:
+        type: string
+    type: object
+  schema.DashboardRequest:
+    properties:
+      course_name:
+        description: добавь в свагер
+        type: string
+    type: object
+  schema.DashboardResponse:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      professor:
+        type: string
+      type:
+        type: string
+    type: object
+  schema.ErrorResponse:
+    properties:
+      error:
+        properties:
+          code:
+            type: integer
+          message:
+            type: string
+        type: object
+    type: object
+  schema.HomeworkFile:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  schema.HomeworkReq:
+    properties:
+      course_name:
+        type: string
+      email:
+        type: string
+      lesson_name:
+        type: string
+    type: object
+  schema.HomeworkResp:
+    properties:
+      course_name:
+        type: string
+      description:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/schema.HomeworkFile'
+        type: array
+      homework_id:
+        type: string
+      lesson_name:
+        type: string
+      mark:
+        type: integer
+      professor:
+        type: string
+    type: object
+  schema.LessonCommentRequest:
+    properties:
+      comment:
+        type: string
+      lesson_id:
+        type: integer
+    type: object
+  schema.LessonCommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/schema.CommentResp'
+        type: array
+      success:
+        type: boolean
+    type: object
+  schema.LessonReq:
+    properties:
+      course_name:
+        type: string
+      lesson_name:
+        type: string
+    type: object
+  schema.LessonResp:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  schema.LessonsRequest:
+    properties:
+      course_name:
+        description: добавь в свагер
+        type: string
+    type: object
+  schema.LessonsResponse:
+    properties:
+      lessons:
+        items:
+          $ref: '#/definitions/schema.LessonResp'
+        type: array
+    type: object
+  schema.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  schema.LoginResp:
+    properties:
+      token:
+        type: string
+    type: object
+  schema.RefreshResp:
+    properties:
+      email:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token:
+        type: string
+    type: object
+  schema.RegistrationReq:
+    properties:
+      cource:
+        type: string
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      gpa:
+        type: number
+      name:
+        type: string
+      password:
+        type: string
+      student_card:
+        type: string
+      username:
+        type: string
+    type: object
+  schema.SignupCourseReq:
+    properties:
+      course_name:
+        type: string
+      email:
+        type: string
+    type: object
+  schema.SignupCourseResp:
+    properties:
+      course_name:
+        type: string
+    type: object
+  schema.StudentProfile:
+    properties:
+      student:
+        properties:
+          email:
+            type: string
+          id:
+            type: integer
+          username:
+            type: string
+        type: object
+      student_data:
+        properties:
+          cource:
+            type: string
+          date_of_birth:
+            type: string
+          gpa:
+            type: number
+          name:
+            type: string
+          student_card:
+            type: string
+        type: object
+    type: object
+  schema.UserChangePassReq:
+    properties:
+      email:
+        type: string
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+<<<<<<< HEAD
+=======
+  contact: {}
+>>>>>>> origin/Front_bombas
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: email и пароль
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.LoginResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Войти в систему
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Выйти из системы
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.RefreshResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Овновить JWT токен
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: данные о пользователе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.RegistrationReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'id: идентификатор пользователя'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Зарегестрировать пользователя
+      tags:
+      - auth
+  /course/comment:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID курса
+        in: query
+        name: course_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.CourseCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить комментарии к курсу
+      tags:
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные комментария
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.CourseCommentRequest'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.CourseCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Добавить комментарий к курсу
+      tags:
+      - cources
+  /course/dashboard:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Информация о курсе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.DashboardRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.DashboardResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить главную страницу курса
+      tags:
+      - cources
+  /course/lesson:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Информация об уроке
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LessonReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.LessonResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить урок курса
+      tags:
+      - cources
+  /course/lesson/homework:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные о домашней работе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.HomeworkReq'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.HomeworkResp'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить домашнюю работу
+      tags:
+      - cources
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Файл для загрузки ??? хз как
+        in: formData
+        name: file
+        required: true
+        type: file
+      - in: formData
+        name: course_name
+        type: string
+      - in: formData
+        name: email
+        type: string
+      - in: formData
+        name: homework_id
+        type: string
+      - in: formData
+        name: lesson_name
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.HomeworkResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Отправить домашнюю работу
+      tags:
+      - cources
+  /course/lesson/sign_up:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Регистрация на курс
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.SignupCourseReq'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.SignupCourseResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Заерегистрироваться на курс
+      tags:
+      - cources
+  /course/lessons:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Информация о курсе
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LessonsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.LessonsResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить все уроки курса
+      tags:
+      - cources
+  /courses:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.Course'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить все курсы
+      tags:
+      - cources
+  /lesson/comment:
+    get:
+<<<<<<< HEAD
+      consumes:
+      - application/json
+      parameters:
+      - description: ID урока
+        in: query
+        name: lesson_id
+        required: true
+        type: integer
+=======
+      consumes:
+      - application/json
+      parameters:
+      - description: ID урока
+        in: query
+        name: lesson_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить комментарии к уроку
+      tags:
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные комментария
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LessonCommentRequest'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Добавить комментарий к уроку
+      tags:
+      - cources
+  /user/change_pass:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Изменения пароля
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserChangePassReq'
+>>>>>>> origin/Front_bombas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id: идентификатор пользователя'
+          schema:
+<<<<<<< HEAD
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+=======
+            additionalProperties: true
+            type: object
+>>>>>>> origin/Front_bombas
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+<<<<<<< HEAD
+      summary: Получить комментарии к уроку
+=======
+      summary: Изменить пароль пользователя
+>>>>>>> origin/Front_bombas
+      tags:
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные комментария
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LessonCommentRequest'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Добавить комментарий к уроку
+      tags:
+      - cources
+  /user/courses:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/schema.CourseDB'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить курсы на которые записан пользователь
+      tags:
+      - users
+  /user/dashboard:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.DashboardResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить главную страницу
+      tags:
+      - dashboard
+<<<<<<< HEAD
+  /user/password:
+=======
+  /user/edit:
+>>>>>>> origin/Front_bombas
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Изменения пароля
+        in: body
+        name: body
+        required: true
+        schema:
+<<<<<<< HEAD
+          $ref: '#/definitions/schema.UserChangePassReq'
+=======
+          $ref: '#/definitions/schema.StudentProfile'
+>>>>>>> origin/Front_bombas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id: идентификатор пользователя'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+<<<<<<< HEAD
+      summary: Изменить пароль пользователя
+=======
+      summary: Изменить профиль пользователя
+>>>>>>> origin/Front_bombas
+      tags:
+      - users
+  /user/profile:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.StudentProfile'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить профиль пользователя
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Изменения профиля
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.StudentProfile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id: идентификатор пользователя'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Изменить профиль пользователя
+      tags:
+      - users
+swagger: "2.0"

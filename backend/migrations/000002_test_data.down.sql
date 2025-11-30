@@ -1,0 +1,11 @@
+DELETE FROM marks;
+DELETE FROM homework;
+DELETE FROM comments_lessons;
+DELETE FROM comments_courses;
+DELETE FROM user_course;
+DELETE FROM lessons;
+DELETE FROM courses;
+DELETE FROM student_data;
+DELETE FROM professor_data;
+DELETE FROM student;
+DELETE FROM professor;
