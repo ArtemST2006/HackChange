@@ -26,7 +26,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var input schema.RegistrationReq
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -44,7 +44,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 	id, err := h.services.Authorization.CreateUser(user, user_data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -68,18 +68,18 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var input schema.LoginReq
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	token, in, err := h.services.GetUserA(input.Email, input.HashedPassword)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	if in.ID == 0 {
-		http.Error(w, "user not found", http.StatusNotFound)
+		writeErrorResponse(w, http.StatusNotFound, "user not found")
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -108,13 +108,13 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
-		http.Error(w, "refresh token not found", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, "refresh token not found")
 		return
 	}
 
 	token, err := h.services.Authorization.RefreshToken(cookie.Value)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -144,12 +144,12 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 
 	cookie, err := r.Cookie("refresh_token")
 	if err != nil {
-		http.Error(w, "refresh token not found", http.StatusBadRequest)
+		writeErrorResponse(w, http.StatusBadRequest, "refresh token not found")
 		return
 	}
 	err = h.services.Authorization.Logout(cookie.Value)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 

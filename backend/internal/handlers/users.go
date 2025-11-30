@@ -21,22 +21,12 @@ import (
 func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = err.Error()
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	userIDClaim, exists := claims["user_id"]
 	if !exists {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "user_id not found in token"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, "user id not found in token")
 		return
 	}
 
@@ -54,22 +44,13 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	case uint64:
 		studentID = uint(v)
 	default:
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "invalid user_id type in token"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, "invalid chtoto")
 		return
 	}
 
 	profile, err := h.services.User.GetUser(studentID)
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -91,23 +72,13 @@ func (h *Handler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	userIDClaim, exists := claims["user_id"]
 	if !exists {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "user_id not found in token"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, "user_id not found in token")
 		return
 	}
 
@@ -125,33 +96,18 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 	case uint64:
 		studentID = uint(v)
 	default:
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "invalid user_id type in token"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, "invalid user id type in token")
 		return
 	}
 	var updateData schema.StudentProfile
 	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	resp, err := h.services.User.UpdateUser(studentID, &updateData)
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -174,23 +130,13 @@ func (h *Handler) EditUserProfile(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	userIDClaim, exists := claims["user_id"]
 	if !exists {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "user_id not found in token"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, "user_id not found in token")
 		return
 	}
 
@@ -219,12 +165,7 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 
 	courses, err := h.services.User.GetUserCourses(studentID)
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = "ошибка"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -246,23 +187,13 @@ func (h *Handler) GetUserCourses(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) UserChangePass(w http.ResponseWriter, r *http.Request) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusInternalServerError
-		resp.Error.Message = err.Error()
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	userIDClaim, exists := claims["user_id"]
 	if !exists {
-		var resp schema.ErrorResponse
-		resp.Error.Code = http.StatusBadRequest
-		resp.Error.Message = "user_id not found in token"
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(resp.Error.Code)
-		json.NewEncoder(w).Encode(resp)
+		writeErrorResponse(w, http.StatusInternalServerError, "user_id not found")
 		return
 	}
 
