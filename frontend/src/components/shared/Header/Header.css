@@ -2,28 +2,45 @@
   position: fixed;
   top: 0;
   left: 0;
+<<<<<<< HEAD
   right: 0;
+=======
+  width: 100%;
+>>>>>>> origin/Front_bombas
   height: var(--header-height);
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-light);
   z-index: var(--z-index-sticky);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+<<<<<<< HEAD
+=======
+  box-sizing: border-box;
+>>>>>>> origin/Front_bombas
 }
 
 .header-container {
   height: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
+<<<<<<< HEAD
   padding: 0 var(--spacing-2xl);
   display: flex;
   align-items: center;
   gap: var(--spacing-2xl);
+=======
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  box-sizing: border-box;
+>>>>>>> origin/Front_bombas
 }
 
 .header-logo {
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   gap: var(--spacing-md);
   cursor: pointer;
   user-select: none;
@@ -35,6 +52,12 @@
 .header-logo:hover {
   background: var(--bg-secondary);
   transform: translateY(-2px);
+=======
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+  padding: var(--spacing-sm) 0;
+>>>>>>> origin/Front_bombas
 }
 
 .logo-image {
@@ -42,11 +65,14 @@
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+<<<<<<< HEAD
   transition: transform var(--transition-fast);
 }
 
 .header-logo:hover .logo-image {
   transform: scale(1.05);
+=======
+>>>>>>> origin/Front_bombas
 }
 
 .logo-icon {
@@ -64,7 +90,11 @@
 .header-nav {
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   gap: var(--spacing-sm);
+=======
+  gap: 2px;
+>>>>>>> origin/Front_bombas
   flex: 1;
   justify-content: center;
 }
@@ -74,6 +104,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+<<<<<<< HEAD
   padding: var(--spacing-md) var(--spacing-xl);
   background: transparent;
   border: none;
@@ -81,6 +112,15 @@
   cursor: pointer;
   transition: all var(--transition-base);
   font-size: var(--font-size-base);
+=======
+  padding: var(--spacing-sm) 2px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: var(--font-size-sm);
+>>>>>>> origin/Front_bombas
   font-weight: var(--font-weight-medium);
   color: var(--text-secondary);
   overflow: hidden;
@@ -146,8 +186,14 @@
 .header-right {
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   gap: var(--spacing-md);
   margin-left: auto;
+=======
+  gap: var(--spacing-xs);
+  margin-left: auto;
+  padding: 0;
+>>>>>>> origin/Front_bombas
 }
 
 .header-profile {
@@ -156,12 +202,20 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
+<<<<<<< HEAD
   padding: 2px;
+=======
+  padding: 2px 8px;
+>>>>>>> origin/Front_bombas
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--transition-fast);
   border: 2px solid transparent;
+<<<<<<< HEAD
   min-width: 180px;
+=======
+  min-width: 200px;
+>>>>>>> origin/Front_bombas
 }
 
 .header-profile:hover {
@@ -278,7 +332,10 @@
   transform: translateX(4px);
 }
 
+<<<<<<< HEAD
 /* Responsive */
+=======
+>>>>>>> origin/Front_bombas
 @media (max-width: 1024px) {
   .nav-button {
     padding: var(--spacing-md) var(--spacing-lg);

@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { User, LoginCredentials, RegisterData } from '../types';
+<<<<<<< HEAD
 import { mockUser } from '../utils/mockData';
 import { authService } from '../services/api/auth.service';
+=======
+import type { RegistrationRequest } from '../types/backend.types';
+import { mockUser } from '../utils/mockData';
+import { authService } from '../services/api/auth.service';
+import { adaptStudentProfileToUser } from '../utils/adapters';
+>>>>>>> origin/Front_bombas
 
 interface AuthContextType {
   user: User | null;
@@ -48,13 +55,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Real API mode: verify token and get current user
         if (token) {
           try {
+<<<<<<< HEAD
             const currentUser = await authService.getCurrentUser();
+=======
+            const profile = await authService.getCurrentUser();
+            const currentUser = adaptStudentProfileToUser(profile);
+>>>>>>> origin/Front_bombas
             setUser(currentUser);
             localStorage.setItem('user', JSON.stringify(currentUser));
           } catch (error) {
             // Token is invalid, clear it
             localStorage.removeItem('authToken');
+<<<<<<< HEAD
             localStorage.removeItem('refreshToken');
+=======
+            localStorage.removeItem('userEmail');
+>>>>>>> origin/Front_bombas
             localStorage.removeItem('user');
           }
         }
@@ -81,9 +97,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       } else {
         // Real API login
+<<<<<<< HEAD
         const response = await authService.login(credentials);
         setUser(response.user);
         localStorage.setItem('user', JSON.stringify(response.user));
+=======
+        // Step 1: Login and get token
+        const loginResponse = await authService.login({
+          email: credentials.email,
+          password: credentials.password,
+        });
+
+        // Step 2: Get user profile
+        const profile = await authService.getCurrentUser();
+        const loggedInUser = adaptStudentProfileToUser(profile);
+
+        setUser(loggedInUser);
+        localStorage.setItem('user', JSON.stringify(loggedInUser));
+>>>>>>> origin/Front_bombas
       }
     } catch (error: any) {
       const errorMessage = error?.message || 'Неверный email или пароль';
@@ -104,6 +135,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           email: data.email,
           firstName: data.firstName,
           lastName: data.lastName,
+<<<<<<< HEAD
+=======
+          username: data.username,
+          studentCard: data.studentCard,
+          course: data.course,
+          gpa: data.gpa,
+          birthDate: data.dateOfBirth,
+>>>>>>> origin/Front_bombas
           role: 'student',
           registeredAt: new Date().toISOString(),
         };
@@ -113,9 +152,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('authToken', 'mock-token');
       } else {
         // Real API registration
+<<<<<<< HEAD
         const response = await authService.register(data);
         setUser(response.user);
         localStorage.setItem('user', JSON.stringify(response.user));
+=======
+        const fullName = `${data.firstName} ${data.lastName}`.trim();
+
+        const registrationData: RegistrationRequest = {
+          email: data.email,
+          password: data.password,
+          username: data.username,
+          name: fullName,
+          student_card: data.studentCard,
+          date_of_birth: data.dateOfBirth,
+          cource: data.course, // Note: typo in backend
+          gpa: data.gpa,
+        };
+
+        // Register user (returns only {id})
+        await authService.register(registrationData);
+
+        // After successful registration, login automatically
+        await login({
+          email: data.email,
+          password: data.password,
+        });
+>>>>>>> origin/Front_bombas
       }
     } catch (error: any) {
       const errorMessage = error?.message || 'Ошибка регистрации';
@@ -136,7 +199,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       localStorage.removeItem('user');
       localStorage.removeItem('authToken');
+<<<<<<< HEAD
       localStorage.removeItem('refreshToken');
+=======
+      localStorage.removeItem('userEmail');
+>>>>>>> origin/Front_bombas
     }
   };
 

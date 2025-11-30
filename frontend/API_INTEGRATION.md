@@ -6,7 +6,11 @@
 
 Фронтенд ожидает API на URL, указанном в переменной окружения:
 ```
+<<<<<<< HEAD
 VITE_API_BASE_URL=http://localhost:8000
+=======
+VITE_API_BASE_URL=http://localhost:3000/api
+>>>>>>> origin/Front_bombas
 ```
 
 ## Аутентификация
@@ -384,11 +388,16 @@ try {
 
 ```bash
 # Login
+<<<<<<< HEAD
 curl -X POST http://localhost:8000/auth/login \
+=======
+curl -X POST http://localhost:3000/api/auth/login \
+>>>>>>> origin/Front_bombas
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 
 # Get dashboard (with auth)
+<<<<<<< HEAD
 curl -X GET http://localhost:8000/dashboard \
   -H "Authorization: Bearer YOUR_TOKEN"
 
@@ -397,6 +406,16 @@ curl -X GET "http://localhost:8000/courses?category=Programming&difficulty=begin
 
 # Submit homework
 curl -X POST http://localhost:8000/homeworks/hw-123/submit \
+=======
+curl -X GET http://localhost:3000/api/dashboard \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Get courses with filters
+curl -X GET "http://localhost:3000/api/courses?category=Programming&difficulty=beginner"
+
+# Submit homework
+curl -X POST http://localhost:3000/api/homeworks/hw-123/submit \
+>>>>>>> origin/Front_bombas
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "textAnswer=My answer" \
   -F "files=@/path/to/file.pdf"

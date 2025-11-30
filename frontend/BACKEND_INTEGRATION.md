@@ -20,7 +20,11 @@ cp .env.example .env
 
 ```env
 # URL вашего бэкенда
+<<<<<<< HEAD
 VITE_API_BASE_URL=http://localhost:8000
+=======
+VITE_API_BASE_URL=http://localhost:3000/api
+>>>>>>> origin/Front_bombas
 
 # Использовать моковые данные (true/false)
 VITE_USE_MOCK_DATA=false  # false для работы с реальным API

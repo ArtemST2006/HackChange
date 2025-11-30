@@ -1,5 +1,9 @@
 // API Configuration
+<<<<<<< HEAD
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+=======
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+>>>>>>> origin/Front_bombas
 
 export interface ApiResponse<T> {
   data: T;
@@ -20,7 +24,11 @@ class ApiClient {
     this.baseURL = baseURL;
   }
 
+<<<<<<< HEAD
   private async request<T>(
+=======
+  async request<T>(
+>>>>>>> origin/Front_bombas
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
@@ -31,6 +39,10 @@ class ApiClient {
 
     const config: RequestInit = {
       ...options,
+<<<<<<< HEAD
+=======
+      credentials: 'include', // ВАЖНО: для работы с cookies (refresh_token)
+>>>>>>> origin/Front_bombas
       headers: {
         'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
@@ -111,6 +123,10 @@ class ApiClient {
 
     const config: RequestInit = {
       method: 'POST',
+<<<<<<< HEAD
+=======
+      credentials: 'include', // ВАЖНО: для работы с cookies
+>>>>>>> origin/Front_bombas
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),
       },

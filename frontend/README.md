@@ -171,7 +171,11 @@ cp .env.example .env
 
 2. Укажите URL вашего API:
 ```
+<<<<<<< HEAD
 VITE_API_BASE_URL=http://localhost:8000
+=======
+VITE_API_BASE_URL=http://localhost:3000/api
+>>>>>>> origin/Front_bombas
 ```
 
 ### Использование API сервисов

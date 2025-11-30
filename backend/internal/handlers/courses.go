@@ -10,6 +10,34 @@ import (
 	"github.com/google/uuid"
 )
 
+<<<<<<< HEAD
+=======
+func (h *Handler) decodeJSON(r *http.Request, v interface{}) error {
+	decoder := json.NewDecoder(r.Body)
+	return decoder.Decode(v)
+}
+
+func (h *Handler) errorResponse(w http.ResponseWriter, statusCode int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(schema.ErrorResponse{
+		Error: struct {
+			Code    int    `json:"code"`
+			Message string `json:"message"`
+		}{
+			Code:    statusCode,
+			Message: message,
+		},
+	})
+}
+
+func (h *Handler) successResponse(w http.ResponseWriter, statusCode int, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(data)
+}
+
+>>>>>>> origin/Front_bombas
 // GetAllCourses godoc
 // @Summary      Получить все курсы
 // @Tags         cources
@@ -68,34 +96,56 @@ func (h *Handler) GetCourseDashboard(w http.ResponseWriter, r *http.Request) { /
 func (h *Handler) PostCourseComment(w http.ResponseWriter, r *http.Request) {
 	var req schema.CourseCommentRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+=======
+		h.respondWithError(w, http.StatusBadRequest, "Invalid JSON")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	if req.CourseID == 0 || req.Comment == "" {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "course_id and comment are required")
+=======
+		h.respondWithError(w, http.StatusBadRequest, "course_id and comment are required")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	userID, ok := r.Context().Value("user_id").(uint)
 	if !ok {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusUnauthorized, "Unauthorized")
+=======
+		h.respondWithError(w, http.StatusUnauthorized, "Unauthorized")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	err := h.services.CommentService.CreateCourseComment(userID, req.CourseID, req.Comment)
 	if err != nil {
 		if err.Error() == "course not found" {
+<<<<<<< HEAD
 			writeErrorResponse(w, http.StatusNotFound, err.Error())
 		} else {
 			writeErrorResponse(w, http.StatusInternalServerError, "Failed to add comment")
+=======
+			h.respondWithError(w, http.StatusNotFound, err.Error())
+		} else {
+			h.respondWithError(w, http.StatusInternalServerError, "Failed to add comment")
+>>>>>>> origin/Front_bombas
 		}
 		return
 	}
 
 	comments, err := h.services.CommentService.GetCourseComments(req.CourseID)
 	if err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusInternalServerError, "Failed to fetch comments")
+=======
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
@@ -120,13 +170,21 @@ func (h *Handler) GetCourseComment(w http.ResponseWriter, r *http.Request) {
 	courseIDStr := r.URL.Query().Get("course_id")
 	courseID, err := strconv.ParseUint(courseIDStr, 10, 32)
 	if err != nil || courseID == 0 {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "valid course_id is required")
+=======
+		h.respondWithError(w, http.StatusBadRequest, "valid course_id is required")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	comments, err := h.services.CommentService.GetCourseComments(uint(courseID))
 	if err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusInternalServerError, "Failed to fetch comments")
+=======
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
@@ -212,34 +270,56 @@ func (h *Handler) GetCourseLesson(w http.ResponseWriter, r *http.Request) { // a
 func (h *Handler) PostLessonComment(w http.ResponseWriter, r *http.Request) {
 	var req schema.LessonCommentRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "Invalid JSON")
+=======
+		h.respondWithError(w, http.StatusBadRequest, "Invalid JSON")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	if req.LessonID == 0 || req.Comment == "" {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "lesson_id and comment are required")
+=======
+		h.respondWithError(w, http.StatusBadRequest, "lesson_id and comment are required")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	userID, ok := r.Context().Value("user_id").(uint)
 	if !ok {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusUnauthorized, "Unauthorized")
+=======
+		h.respondWithError(w, http.StatusUnauthorized, "Unauthorized")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	err := h.services.CommentService.CreateLessonComment(userID, req.LessonID, req.Comment)
 	if err != nil {
 		if err.Error() == "lesson not found" {
+<<<<<<< HEAD
 			writeErrorResponse(w, http.StatusNotFound, err.Error())
 		} else {
 			writeErrorResponse(w, http.StatusInternalServerError, "Failed to add comment")
+=======
+			h.respondWithError(w, http.StatusNotFound, err.Error())
+		} else {
+			h.respondWithError(w, http.StatusInternalServerError, "Failed to add comment")
+>>>>>>> origin/Front_bombas
 		}
 		return
 	}
 
 	comments, err := h.services.CommentService.GetLessonComments(req.LessonID)
 	if err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusInternalServerError, "Failed to fetch comments")
+=======
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
@@ -264,13 +344,21 @@ func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
 	lessonIDStr := r.URL.Query().Get("lesson_id")
 	lessonID, err := strconv.ParseUint(lessonIDStr, 10, 32)
 	if err != nil || lessonID == 0 {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "valid lesson_id is required")
+=======
+		h.respondWithError(w, http.StatusBadRequest, "valid lesson_id is required")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	comments, err := h.services.CommentService.GetLessonComments(uint(lessonID))
 	if err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusInternalServerError, "Failed to fetch comments")
+=======
+		h.respondWithError(w, http.StatusInternalServerError, "Failed to fetch comments")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
@@ -289,7 +377,11 @@ func (h *Handler) GetLessonComment(w http.ResponseWriter, r *http.Request) {
 // @Param        Authorization	header	string	true	"Bearer"
 // @Success		 201 	{object}	schema.SignupCourseResp
 // @Failure      500    {object}	schema.ErrorResponse
+<<<<<<< HEAD
 // @Router       /course/lesson/signup [post]
+=======
+// @Router       /course/lesson/sign_up [post]
+>>>>>>> origin/Front_bombas
 func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
 	request := schema.SignupCourseReq{}
 
@@ -326,7 +418,11 @@ func (h *Handler) SignupCourse(w http.ResponseWriter, r *http.Request) { // art
 func (h *Handler) GetHomework(w http.ResponseWriter, r *http.Request) {
 	var req schema.HomeworkReq
 	if err := h.decodeJSON(r, &req); err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "Invalid request body")
+=======
+		h.errorResponse(w, http.StatusBadRequest, "Invalid request body")
+>>>>>>> origin/Front_bombas
 		return
 	}
 	homeworkID := r.URL.Query().Get("homework_id")
@@ -371,33 +467,53 @@ func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
 	// Parse multipart form
 	err := r.ParseMultipartForm(100 << 20) // 32MB max memory
 	if err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "Failed to parse form")
+=======
+		h.errorResponse(w, http.StatusBadRequest, "Failed to parse form")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	// Support multiple files with form key "file"
 	if err := r.ParseMultipartForm(100 << 20); err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "Failed to parse multipart form")
+=======
+		h.errorResponse(w, http.StatusBadRequest, "Failed to parse multipart form")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	uploadedFiles := []schema.HomeworkUploadFile{}
 	filesHeaders := r.MultipartForm.File["file"]
 	if len(filesHeaders) == 0 {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "No files uploaded")
+=======
+		h.errorResponse(w, http.StatusBadRequest, "No files uploaded")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	for _, fh := range filesHeaders {
 		f, err := fh.Open()
 		if err != nil {
+<<<<<<< HEAD
 			writeErrorResponse(w, http.StatusInternalServerError, "Failed to open uploaded file")
+=======
+			h.errorResponse(w, http.StatusInternalServerError, "Failed to open uploaded file")
+>>>>>>> origin/Front_bombas
 			return
 		}
 		data, err := io.ReadAll(f)
 		f.Close()
 		if err != nil {
+<<<<<<< HEAD
 			writeErrorResponse(w, http.StatusInternalServerError, "Failed to read uploaded file")
+=======
+			h.errorResponse(w, http.StatusInternalServerError, "Failed to read uploaded file")
+>>>>>>> origin/Front_bombas
 			return
 		}
 		uploadedFiles = append(uploadedFiles, schema.HomeworkUploadFile{Name: fh.Filename, Data: data})
@@ -406,13 +522,21 @@ func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
 	// Get homework data from form
 	hwDataStr := r.FormValue("HW_data")
 	if hwDataStr == "" {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "No homework data provided")
+=======
+		h.errorResponse(w, http.StatusBadRequest, "No homework data provided")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
 	var hwData schema.HomeworkPost
 	if err := json.Unmarshal([]byte(hwDataStr), &hwData); err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusBadRequest, "Invalid homework data")
+=======
+		h.errorResponse(w, http.StatusBadRequest, "Invalid homework data")
+>>>>>>> origin/Front_bombas
 		return
 	}
 
@@ -421,7 +545,11 @@ func (h *Handler) PostHomework(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	err = h.services.MinioService.UploadHomework(ctx, hwData.LessonName, homeworkID, uploadedFiles)
 	if err != nil {
+<<<<<<< HEAD
 		writeErrorResponse(w, http.StatusInternalServerError, "Failed to upload file to storage")
+=======
+		h.errorResponse(w, http.StatusInternalServerError, "Failed to upload file to storage")
+>>>>>>> origin/Front_bombas
 		return
 	}
 	fileNames := make([]string, 0, len(uploadedFiles))
@@ -455,6 +583,7 @@ func (h *Handler) respondWithJSON(w http.ResponseWriter, code int, payload inter
 	json.NewEncoder(w).Encode(payload)
 }
 
+<<<<<<< HEAD
 func (h *Handler) successResponse(w http.ResponseWriter, statusCode int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
@@ -464,4 +593,11 @@ func (h *Handler) successResponse(w http.ResponseWriter, statusCode int, data in
 func (h *Handler) decodeJSON(r *http.Request, v interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	return decoder.Decode(v)
+=======
+func (h *Handler) respondWithError(w http.ResponseWriter, code int, message string) {
+	resp := schema.ErrorResponse{}
+	resp.Error.Code = code
+	resp.Error.Message = message
+	h.respondWithJSON(w, code, resp)
+>>>>>>> origin/Front_bombas
 }
