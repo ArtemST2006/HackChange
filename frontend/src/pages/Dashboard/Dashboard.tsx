@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header, Card, Button, Slider } from '../../components/shared';
 import { useAuth } from '../../context/AuthContext';
 import { userService } from '../../services/api/user.service';
+import { coursesService } from '../../services/api/courses.service';
 import { adaptCourseDBToCourse } from '../../utils/adapters';
 import type { Course } from '../../types';
 import './Dashboard.css';
@@ -22,6 +23,7 @@ export const Dashboard: React.FC = () => {
 
   const [myCourses, setMyCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [enrollingCourse, setEnrollingCourse] = useState<string | null>(null);
 
   // Mock statistics - replace with real API when available
   const statistics = {
@@ -37,6 +39,7 @@ export const Dashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+        // Fetch user's enrolled courses
         const coursesDB = await userService.getEnrolledCourses();
         const adaptedCourses = coursesDB.map(adaptCourseDBToCourse);
         setMyCourses(adaptedCourses);
@@ -50,6 +53,28 @@ export const Dashboard: React.FC = () => {
 
     fetchData();
   }, []);
+
+  const handleEnroll = async (courseId: string, courseName: string) => {
+    if (!user?.email) {
+      alert('Пожалуйста, войдите в систему');
+      return;
+    }
+
+    try {
+      setEnrollingCourse(courseId);
+      await coursesService.enrollInCourse(courseName, user.email);
+      alert('Вы успешно записались на курс!');
+      // Refresh courses
+      const coursesDB = await userService.getEnrolledCourses();
+      const adaptedCourses = coursesDB.map(adaptCourseDBToCourse);
+      setMyCourses(adaptedCourses);
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      alert('Ошибка при записи на курс. Возможно, вы уже записаны.');
+    } finally {
+      setEnrollingCourse(null);
+    }
+  };
 
   const categories = ['Все курсы', ...Array.from(new Set(myCourses.map(c => c.category).filter(Boolean)))];
 
@@ -291,6 +316,21 @@ export const Dashboard: React.FC = () => {
                         </div>
                         <p className="progress-text">{course.progress}% завершено</p>
                       </div>
+                    )}
+
+                    {/* Enroll button if not yet enrolled */}
+                    {!course.isActive && (
+                      <Button
+                        variant="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEnroll(course.id, course.title);
+                        }}
+                        disabled={enrollingCourse === course.id}
+                        style={{ width: '100%', marginTop: '12px' }}
+                      >
+                        {enrollingCourse === course.id ? 'Записываюсь...' : 'Записаться'}
+                      </Button>
                     )}
                   </div>
                 </Card>

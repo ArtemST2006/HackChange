@@ -19,7 +19,16 @@ import (
 // @Failure      500    {object}	schema.ErrorResponse
 // @Router       /courses [get]
 func (h *Handler) GetAllCourses(w http.ResponseWriter, r *http.Request) {
-	panic("implement me")
+	courses, err := h.services.Courses.GetAllCourses()
+	if err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(courses); err != nil {
+		writeErrorResponse(w, http.StatusInternalServerError, err.Error())
+	}
 }
 
 // GetCourseDashboard godoc

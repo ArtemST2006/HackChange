@@ -15,6 +15,10 @@ func NewCoursesService(repo repository.Courses) *CoursesService {
 	}
 }
 
+func (c *CoursesService) GetAllCourses() ([]schema.CourseDB, error) {
+	return c.repo.GetAllCourses()
+}
+
 func (c *CoursesService) GetCourseDashboard(req schema.DashboardRequest) (schema.DashboardResponse, error) {
 	return c.repo.GetCourseDashboard(req)
 }

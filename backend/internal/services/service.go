@@ -19,6 +19,7 @@ type Authorization interface {
 }
 
 type Courses interface {
+	GetAllCourses() ([]schema.CourseDB, error)
 	GetCourseDashboard(schema.DashboardRequest) (schema.DashboardResponse, error)
 	GetCourseLessons(schema.LessonsRequest) (schema.LessonsResponse, error)
 	GetCourseLesson(schema.LessonReq) (schema.LessonResp, error)

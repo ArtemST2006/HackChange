@@ -18,6 +18,33 @@ func NewCoursesRepository(db *gorm.DB) *CoursesRepository {
 	}
 }
 
+func (c *CoursesRepository) GetAllCourses() ([]schema.CourseDB, error) {
+	var courses []schema.Course
+
+	if err := c.db.Find(&courses).Error; err != nil {
+		return nil, fmt.Errorf("failed to fetch courses: %w", err)
+	}
+
+	var result []schema.CourseDB
+	for _, course := range courses {
+		var professorName string
+
+		if err := c.db.Table("professor_data").Select("name").Where("professor_id = ?", course.ProfessorID).Scan(&professorName).Error; err != nil {
+			// If professor not found, use empty string
+			professorName = "Unknown"
+		}
+
+		result = append(result, schema.CourseDB{
+			Name:        course.CourseName,
+			Professor:   professorName,
+			Description: course.Description,
+			Type:        course.Type,
+		})
+	}
+
+	return result, nil
+}
+
 func (c *CoursesRepository) GetCourseDashboard(req schema.DashboardRequest) (schema.DashboardResponse, error) {
 	var course schema.Course
 

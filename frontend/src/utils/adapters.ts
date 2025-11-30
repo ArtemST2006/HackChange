@@ -58,13 +58,23 @@ export function adaptUserToStudentProfile(user: User): StudentProfile {
  * Convert backend CourseDB to frontend Course
  */
 export function adaptCourseDBToCourse(courseDB: CourseDB): Course {
+  // Generate a consistent default cover image based on course type
+  const coverImages: Record<string, string> = {
+    'Python': 'https://via.placeholder.com/400x300/3B82F6/FFFFFF?text=Python',
+    'JavaScript': 'https://via.placeholder.com/400x300/F59E0B/FFFFFF?text=JavaScript',
+    'SQL': 'https://via.placeholder.com/400x300/10B981/FFFFFF?text=SQL',
+    'Web': 'https://via.placeholder.com/400x300/8B5CF6/FFFFFF?text=Web+Development',
+  };
+
+  const defaultCover = coverImages[courseDB.type] || 'https://via.placeholder.com/400x300/6366F1/FFFFFF?text=' + encodeURIComponent(courseDB.name);
+
   return {
     id: courseDB.name, // Backend uses name as identifier
     title: courseDB.name,
-    description: courseDB.description,
+    description: courseDB.description || 'Курс по ' + courseDB.type,
     teacherName: courseDB.professor,
     category: courseDB.type,
-    coverImage: '/default-course-cover.jpg', // No image in backend
+    coverImage: defaultCover, // Use type-specific placeholder or fallback
     teacherId: '0', // Not provided by backend
     progress: 0,
     totalModules: 0,
