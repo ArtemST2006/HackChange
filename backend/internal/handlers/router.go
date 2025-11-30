@@ -1,25 +1,24 @@
 package handlers
 
 import (
- "net/http"
- "time"
+	"net/http"
+	"time"
 
- "github.com/ArtemST2006/HackChange/internal/services"
- "github.com/go-chi/chi/v5"
- "github.com/go-chi/chi/v5/middleware"
- "github.com/go-chi/cors"
- "github.com/go-chi/httprate"
- httpSwagger "github.com/swaggo/http-swagger"
+	service "github.com/ArtemST2006/HackChange/internal/services"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
 )
 
 type Handler struct {
- services *service.Service
+	services *service.Service
 }
 
 func NewHandler(services *service.Service) *Handler {
- return &Handler{
-  services: services,
- }
+	return &Handler{
+		services: services,
+	}
 }
 
 func (h *Handler) InitRoutes() http.Handler {
@@ -29,16 +28,16 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(httprate.LimitByIP(100, 1*time.Minute)) // Rate limit middleware
 
 	r.Use(cors.Handler(cors.Options{
-	AllowedOrigins:   []string{"http://localhost:3000", "http://localhost:5173"},
-	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
-	ExposedHeaders:   []string{"Link"},
-	AllowCredentials: true,
-	MaxAge:           300,
+		AllowedOrigins:   []string{"http://localhost:3000", "http://localhost:5173", "http://localhost:80", "http://localhost", "http://127.0.0.1:3000", "http://127.0.0.1:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
 	}))
 	// Хрен знает правльно ли я написал роуты, но вроде так должно работать (Это все андрей)
 	// Артем, проверь особенно get запросы(нужны ли они)
-	r.Get("/swagger/*any", httpSwagger.WrapHandler())
+	// r.Get("/swagger/*", httpSwagger.Handler())
 
 	r.Route("/auth", func(auth chi.Router) {
 		auth.Post("/register", h.Register)
@@ -57,13 +56,13 @@ func (h *Handler) InitRoutes() http.Handler {
 
 	r.Get("/dashboard", h.GetDashboard)
 	r.Get("/courses", h.GetAllCourses)
-	
+
 	r.Route("/course", func(course chi.Router) {
 		h.authMiddleware(course)
-		course.Get("/dashboard", h.GetCourseDashboard)
-		course.Get("/lessons", h.GetCourseLessons)
-		course.Get("/lesson", h.GetCourseLesson)
-		course.Post("/lesson/signup", h.SignupCourse)
+		course.Get("/dashboard", h.GetCourseDashboard) // art
+		course.Get("/lessons", h.GetCourseLessons)     // art
+		course.Get("/lesson", h.GetCourseLesson)       // art
+		course.Post("/lesson/signup", h.SignupCourse)  // art
 		course.Get("/comment", h.GetCourseComment)
 		course.Post("/comment", h.PostCourseComment)
 	})
@@ -75,7 +74,6 @@ func (h *Handler) InitRoutes() http.Handler {
 		lesson.Get("/homework", h.GetHomework)
 		lesson.Post("/homework", h.PostHomework)
 	})
-	
 
 	return r
 }

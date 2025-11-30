@@ -1,24 +1,50 @@
+info:
+        title: hackchange
+        version: 1.0.0
 definitions:
-  entities.CommentResp:
+  schema.CommentResp:
     properties:
       comment:
         type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      user_id:
+        type: integer
       username:
         type: string
     type: object
-  entities.CourceCommentGet:
+  schema.Course:
     properties:
-      course_name:
+      courseName:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      professorID:
+        type: integer
+      type:
         type: string
     type: object
-  entities.CourceCommentReq:
+  schema.CourseCommentRequest:
     properties:
       comment:
         type: string
-      course_name:
-        type: string
+      course_id:
+        type: integer
     type: object
-  entities.Course:
+  schema.CourseCommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/schema.CommentResp'
+        type: array
+      success:
+        type: boolean
+    type: object
+  schema.CourseDB:
     properties:
       description:
         type: string
@@ -26,18 +52,27 @@ definitions:
         type: string
       professor:
         type: string
-    type: object
-  entities.CourseReq:
-    properties:
-      course_name:
+      type:
         type: string
     type: object
-  entities.DashboardResponse:
+  schema.DashboardRequest:
     properties:
-      course:
-        $ref: '#/definitions/entities.Course'
+      course_name:
+        description: добавь в свагер
+        type: string
     type: object
-  entities.ErrorResponse:
+  schema.DashboardResponse:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      professor:
+        type: string
+      type:
+        type: string
+    type: object
+  schema.ErrorResponse:
     properties:
       error:
         properties:
@@ -47,7 +82,14 @@ definitions:
             type: string
         type: object
     type: object
-  entities.HomeworkReq:
+  schema.HomeworkFile:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  schema.HomeworkReq:
     properties:
       course_name:
         type: string
@@ -56,17 +98,18 @@ definitions:
       lesson_name:
         type: string
     type: object
-  entities.HomeworkResp:
+  schema.HomeworkResp:
     properties:
       course_name:
         type: string
       description:
         type: string
       files:
-        description: тут надо будет сделать
         items:
-          type: object
+          $ref: '#/definitions/schema.HomeworkFile'
         type: array
+      homework_id:
+        type: string
       lesson_name:
         type: string
       mark:
@@ -74,56 +117,62 @@ definitions:
       professor:
         type: string
     type: object
-  entities.LessonCommentGet:
-    properties:
-      course_name:
-        type: string
-      lesson_name:
-        type: string
-    type: object
-  entities.LessonCommentReq:
+  schema.LessonCommentRequest:
     properties:
       comment:
         type: string
-      course_name:
-        type: string
+      lesson_id:
+        type: integer
     type: object
-  entities.LessonReq:
+  schema.LessonCommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/schema.CommentResp'
+        type: array
+      success:
+        type: boolean
+    type: object
+  schema.LessonReq:
     properties:
       course_name:
         type: string
       lesson_name:
         type: string
     type: object
-  entities.LessonResp:
+  schema.LessonResp:
     properties:
       description:
         type: string
       name:
         type: string
     type: object
-  entities.LoginReq:
+  schema.LessonsRequest:
+    properties:
+      course_name:
+        description: добавь в свагер
+        type: string
+    type: object
+  schema.LessonsResponse:
+    properties:
+      lessons:
+        items:
+          $ref: '#/definitions/schema.LessonResp'
+        type: array
+    type: object
+  schema.LoginReq:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  entities.LoginResp:
+  schema.LoginResp:
     properties:
-      email:
-        type: string
       token:
         type: string
     type: object
-  entities.RefreshReq:
-    properties:
-      email:
-        type: string
-      refresh_token:
-        type: string
-    type: object
-  entities.RefreshResp:
+  schema.RefreshResp:
     properties:
       email:
         type: string
@@ -134,10 +183,10 @@ definitions:
       token:
         type: string
     type: object
-  entities.RegistrationReq:
+  schema.RegistrationReq:
     properties:
       cource:
-        type: integer
+        type: string
       date_of_birth:
         type: string
       email:
@@ -153,24 +202,44 @@ definitions:
       username:
         type: string
     type: object
-  entities.RegistrationResp:
-    properties:
-      email:
-        type: string
-    type: object
-  entities.SignupCourseReq:
+  schema.SignupCourseReq:
     properties:
       course_name:
         type: string
       email:
         type: string
     type: object
-  entities.SignupCourseResp:
+  schema.SignupCourseResp:
     properties:
       course_name:
         type: string
     type: object
-  entities.UserChangePassReq:
+  schema.StudentProfile:
+    properties:
+      student:
+        properties:
+          email:
+            type: string
+          id:
+            type: integer
+          username:
+            type: string
+        type: object
+      student_data:
+        properties:
+          cource:
+            type: string
+          date_of_birth:
+            type: string
+          gpa:
+            type: number
+          name:
+            type: string
+          student_card:
+            type: string
+        type: object
+    type: object
+  schema.UserChangePassReq:
     properties:
       email:
         type: string
@@ -179,33 +248,6 @@ definitions:
       old_password:
         type: string
     type: object
-  entities.UserChangePassResp:
-    properties:
-      email:
-        type: string
-    type: object
-  entities.UserProfile:
-    properties:
-      user:
-        properties:
-          cource:
-            type: integer
-          date_of_birth:
-            type: string
-          email:
-            type: string
-          gpa:
-            type: number
-          name:
-            type: string
-          student_card:
-            type: string
-          username:
-            type: string
-        type: object
-    type: object
-info:
-  contact: {}
 paths:
   /auth/login:
     post:
@@ -217,55 +259,63 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.LoginReq'
+          $ref: '#/definitions/schema.LoginReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.LoginResp'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.LoginResp'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Войти в систему
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Выйти из системы
       tags:
       - auth
   /auth/refresh:
     post:
       consumes:
       - application/json
-      parameters:
-      - description: JWT refresh
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/entities.RefreshReq'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entities.RefreshResp'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.RefreshResp'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Овновить JWT токен
       tags:
       - auth
@@ -279,22 +329,19 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.RegistrationReq'
+          $ref: '#/definitions/schema.RegistrationReq'
       produces:
       - application/json
       responses:
         "201":
-          description: Created
+          description: 'id: идентификатор пользователя'
           schema:
-            $ref: '#/definitions/entities.RegistrationResp'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            additionalProperties: true
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Зарегестрировать пользователя
       tags:
       - auth
@@ -303,33 +350,26 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Данные о курсе
-        in: body
-        name: body
+      - description: ID курса
+        in: query
+        name: course_id
         required: true
-        schema:
-          $ref: '#/definitions/entities.CourceCommentGet'
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/entities.CommentResp'
-            type: array
+            $ref: '#/definitions/schema.CourseCommentsResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить комментарии к курсу
       tags:
       - cources
@@ -337,12 +377,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Комментарий к курсу
+      - description: Данные комментария
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.CourceCommentReq'
+          $ref: '#/definitions/schema.CourseCommentRequest'
       - description: Bearer
         in: header
         name: Authorization
@@ -354,20 +394,24 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entities.CommentResp'
+            $ref: '#/definitions/schema.CourseCommentsResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-      summary: Отправить комментарий к курсу
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Добавить комментарий к курсу
       tags:
       - cources
   /course/dashboard:
@@ -380,26 +424,18 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.CourseReq'
+          $ref: '#/definitions/schema.DashboardRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.Course'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.DashboardResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить главную страницу курса
       tags:
       - cources
@@ -413,99 +449,19 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.LessonReq'
+          $ref: '#/definitions/schema.LessonReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.LessonResp'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.LessonResp'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить урок курса
-      tags:
-      - cources
-  /course/lesson/comment:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Данные о уроке
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/entities.LessonCommentGet'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/entities.CommentResp'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-      summary: Получить комментарии к уроку
-      tags:
-      - cources
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Комментарий к уроку
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/entities.LessonCommentReq'
-      - description: Bearer
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/entities.CommentResp'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-      summary: Отправить комментарий к уроку
       tags:
       - cources
   /course/lesson/homework:
@@ -518,7 +474,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.HomeworkReq'
+          $ref: '#/definitions/schema.HomeworkReq'
       - description: Bearer
         in: header
         name: Authorization
@@ -531,20 +487,16 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.HomeworkResp'
+              $ref: '#/definitions/schema.HomeworkResp'
             type: array
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить домашнюю работу
       tags:
       - cources
@@ -564,6 +516,9 @@ paths:
         name: email
         type: string
       - in: formData
+        name: homework_id
+        type: string
+      - in: formData
         name: lesson_name
         type: string
       - description: Bearer
@@ -577,23 +532,19 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entities.HomeworkResp'
+            $ref: '#/definitions/schema.HomeworkResp'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Отправить домашнюю работу
       tags:
       - cources
-  /course/lesson/sign_up:
+  /course/lesson/signup:
     post:
       consumes:
       - application/json
@@ -603,7 +554,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.SignupCourseReq'
+          $ref: '#/definitions/schema.SignupCourseReq'
       - description: Bearer
         in: header
         name: Authorization
@@ -615,19 +566,11 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entities.SignupCourseResp'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.SignupCourseResp'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Заерегистрироваться на курс
       tags:
       - cources
@@ -641,7 +584,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/entities.CourseReq'
+          $ref: '#/definitions/schema.LessonsRequest'
       produces:
       - application/json
       responses:
@@ -649,20 +592,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.LessonResp'
+              $ref: '#/definitions/schema.LessonsResponse'
             type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить все уроки курса
       tags:
       - cources
@@ -677,57 +612,84 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Course'
+              $ref: '#/definitions/schema.Course'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить все курсы
       tags:
       - cources
-  /user/change_pass:
-    post:
+  /lesson/comment:
+    get:
       consumes:
       - application/json
       parameters:
-      - description: Bearer
-        in: header
-        name: Authorization
+      - description: ID урока
+        in: query
+        name: lesson_id
         required: true
-        type: string
-      - description: Изменения пароля
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/entities.UserChangePassReq'
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.UserChangePassResp'
+            $ref: '#/definitions/schema.LessonCommentsResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-      summary: Изменить пароль пользователя
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Получить комментарии к уроку
       tags:
-      - users
+      - cources
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные комментария
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LessonCommentRequest'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/schema.LessonCommentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: Добавить комментарий к уроку
+      tags:
+      - cources
   /user/courses:
     get:
       consumes:
@@ -745,20 +707,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Course'
+              $ref: '#/definitions/schema.CourseDB'
             type: array
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить курсы на которые записан пользователь
       tags:
       - users
@@ -772,52 +726,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.DashboardResponse'
+            $ref: '#/definitions/schema.DashboardResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить главную страницу
       tags:
       - dashboard
-  /user/edit:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Bearer
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Изменения профиля
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/entities.UserProfile'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/entities.UserProfile'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-      summary: Изменить профиль пользователя
-      tags:
-      - users
   /user/profile:
     get:
       consumes:
@@ -834,19 +750,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.UserProfile'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.StudentProfile'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/entities.ErrorResponse'
+            $ref: '#/definitions/schema.ErrorResponse'
       summary: Получить профиль пользователя
       tags:
       - users
